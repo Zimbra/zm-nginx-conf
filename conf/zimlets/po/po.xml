@@ -1,0 +1,11 @@
+<zimlet>
+	<name>po</name>
+	<version>1.0</version>
+	<description>Zimbra Purchase Order</description>
+
+	<serverExtension>
+		<hasKeyword>po</hasKeyword>
+		<regex>GR\w{6}\-\w{5}</regex>
+	</serverExtension>
+</zimlet>
+
