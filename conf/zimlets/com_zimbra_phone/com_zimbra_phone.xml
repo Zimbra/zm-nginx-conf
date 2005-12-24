@@ -1,4 +1,4 @@
-<zimlet name="phone" version="1.0" description="Phone Number">
+<zimlet name="com_zimbra_phone" version="1.0" description="Phone Number">
 	<serverExtension hasKeyword="phone" extensionClass="com.zimbra.cs.zimlet.handler.NANPHandler"/>
 	<contentObject>
 		<matchOn>
@@ -21,10 +21,4 @@
 			<actionJavaScript/>
 		</menuItem>
 	</contextMenu>
-	<zimletPanelItem label="${msg.call}" icon="call.gif">
-		<toolTipText>${msg.panelTooltipText}</toolTipText>
-		<dragSource type="ZmContact">
-			<actionJavaScript/> 
-		</dragSource>
-	</zimletPanelItem>
 </zimlet>
