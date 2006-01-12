@@ -60,7 +60,7 @@ SECTION webxml
 	VAR zimbraMailPort
 	VAR zimbraMailSSLPort
 	REWRITE tomcat/conf/zimbra.web.xml.in tomcat/webapps/zimbra/WEB-INF/web.xml
-	REWRITE tomcat/conf/zimbra.web.xml.in tomcat/webapps/zimbraAdmin/WEB-INF/web.xml
+	REWRITE tomcat/conf/zimbraAdmin.web.xml.in tomcat/webapps/zimbraAdmin/WEB-INF/web.xml
 	REWRITE tomcat/conf/service.web.xml.in tomcat/webapps/service/WEB-INF/web.xml
 RESTART tomcat
 
