@@ -39,7 +39,9 @@ SECTION mta
 	VAR zimbraMtaBlockedExtension
 	VAR zimbraMtaRecipientDelimiter
 	VAR zimbraMtaMyNetworks
-	POSTCONF mynetworks VAR zimbraMtaMyNetworks
+	if VAR zimbraMtaMyNetworks
+		POSTCONF mynetworks VAR zimbraMtaMyNetworks
+	fi
 	LOCAL zimbra_server_hostname
 	REWRITE conf/postfix_header_checks.in conf/postfix_header_checks
 	POSTCONF myhostname		LOCAL zimbra_server_hostname
