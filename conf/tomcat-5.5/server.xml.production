@@ -13,13 +13,13 @@
   <Service name="Catalina">
     <!-- user services connector, no SSL -->
 	<!-- HTTPBEGIN -->
-    <Connector port="%%zimbraMailPort%%"
-        enableLookups="false" redirectPort="%%zimbraMailSSLPort%%"
+    <Connector port="80"
+        enableLookups="false" redirectPort="443"
         maxThreads="100" minSpareThreads="100" maxSpareThreads="100"/>
 	<!-- HTTPEND -->
     <!-- user services connector, SSL -->
 	<!-- HTTPSBEGIN 
-    <Connector port="%%zimbraMailSSLPort%%"
+    <Connector port="443"
         enableLookups="false"
         maxThreads="100" minSpareThreads="100" maxSpareThreads="100"
         scheme="https" secure="true"
