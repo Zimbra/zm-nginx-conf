@@ -47,10 +47,9 @@ function(content, startIndex) {
 ZmBugzObjectHandler.prototype.toolTipPoppedUp =
 function(spanElement, obj, context, canvas) {
 	canvas.innerHTML = "<b>ID: </b>"+context;
-	var request = new AjxRpcRequest("bugzilla");
 	var bug_url = this.getConfig("url")+context;
 	var url = ZmZimletBase.PROXY + AjxStringUtil.urlEncode(bug_url);
-	request.invoke(null, url, null, new AjxCallback(this, ZmBugzObjectHandler._callback, canvas), true);
+	AjxRpc.invoke(null, url, null, new AjxCallback(this, ZmBugzObjectHandler._callback, canvas), true);
 };
 
 ZmBugzObjectHandler._callback =
