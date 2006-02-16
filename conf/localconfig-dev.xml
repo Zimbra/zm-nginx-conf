@@ -63,4 +63,5 @@
   <key name="debug_validate_outgoing_icalendar">
     <value>true</value>
   </key>
+
 </localconfig>
