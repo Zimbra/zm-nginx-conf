@@ -31,13 +31,13 @@
 function Com_Zimbra_YMaps() {
 }
 
-Com_Zimbra_YMaps.prototype = new ZmZimletBase();
-Com_Zimbra_YMaps.prototype.constructor = Com_Zimbra_YMaps;
-
 Com_Zimbra_YMaps.prototype.init =
 function() {
 	(new Image()).src = this.getResource('blank_pixel.gif');
 };
+
+Com_Zimbra_YMaps.prototype = new ZmZimletBase();
+Com_Zimbra_YMaps.prototype.constructor = Com_Zimbra_YMaps;
 
 // Y! Maps Webservice URL
 Com_Zimbra_YMaps.URL = "http://api.local.yahoo.com/MapsService/V1/mapImage?appid=ZimbraMail&zoom=4&image_height=245&image_width=345&location=";
@@ -45,7 +45,22 @@ Com_Zimbra_YMaps.URL = "http://api.local.yahoo.com/MapsService/V1/mapImage?appid
 // Map image URI cache
 Com_Zimbra_YMaps.CACHE = new Array();
 
+
 // Panel Zimlet Methods
+
+// Called by the Zimbra framework upon an accepted drag'n'drop
+Com_Zimbra_YMaps.prototype.doDrop = 
+function(obj) {
+	switch (obj.TYPE) {
+	    case "ZmContact":
+		this._contactDropped(obj);
+		break;
+
+	    default:
+		this.displayErrorMessage("You somehow managed to drop a \"" + obj.TYPE + "\" but however the Yahoo Maps Zimlet does't support it for drag'n'drop.");
+	}
+};
+
 // Called by the Zimbra framework when the Ymaps panel item was double clicked
 Com_Zimbra_YMaps.prototype.doubleClicked = function() {
 	this.singleClicked();
@@ -91,6 +106,18 @@ function() {
 	this._dlg_propertyEditor = null;
 };
 
+// Called when a new contact has been dropped onto the Zimlet panel item.
+Com_Zimbra_YMaps.prototype._contactDropped = 
+function(contact) {
+	var addr = contact.workStreet + ", " + contact.workCity + ", " + contact.workState + " " + contact.workPostalCode;
+	// XXX Ugly hack to check is it's a valid address
+	if(!addr || !addr.indexOf("undefined")) {
+		this.displayErrorMessage("You dropped a contact with an invalid work address: \n" + addr);
+		return;
+	}
+	this._displayDialogMap(addr);
+};
+	
 Com_Zimbra_YMaps.prototype._displayDialogMap = 
 function(address) {
 	var view = new DwtComposite(this.getShell());
@@ -125,7 +152,7 @@ function(spanElement, obj, context, canvas) {
 	if (Com_Zimbra_YMaps.CACHE[obj+"img"]) {
 		Com_Zimbra_YMaps._displayImage(Com_Zimbra_YMaps.CACHE[obj+"img"], obj);
 	} else {
-		var url = ZmZimletBase.PROXY + AjxStringUtil.urlEncode(Com_Zimbra_YMaps.URL + AjxStringUtil.urlEncode(obj));
+		var url = ZmZimletBase.PROXY + AjxStringUtil.urlEncode(Com_Zimbra_YMaps.URL + obj);
 		DBG.println(AjxDebug.DBG2, "Com_Zimbra_YMaps URL: " + url);
 		AjxRpc.invoke(null, url, null, new AjxCallback(this, Com_Zimbra_YMaps._callback, obj), true);
 	}

@@ -31,14 +31,14 @@
 function Com_Zimbra_Amzn() {
 }
 
-Com_Zimbra_Amzn.prototype = new ZmZimletBase();
-Com_Zimbra_Amzn.prototype.constructor = Com_Zimbra_Amzn;
-
 Com_Zimbra_Amzn.prototype.init =
 function() {
 	// Pre-load placeholder image
 	(new Image()).src = this.getResource('blank_pixel.gif');
 };
+
+Com_Zimbra_Amzn.prototype = new ZmZimletBase();
+Com_Zimbra_Amzn.prototype.constructor = Com_Zimbra_Amzn;
 
 // AMZN Service URL
 Com_Zimbra_Amzn.URL = "http://webservices.amazon.com/onca/xml?Service=AWSECommerceService&AWSAccessKeyId=1582H242YD2K3JEANR82&Operation=ItemSearch&SearchIndex=Books&ResponseGroup=Medium&Keywords=";
@@ -49,11 +49,11 @@ Com_Zimbra_Amzn.prototype.toolTipPoppedUp =
 function(spanElement, obj, context, canvas) {
 	canvas.innerHTML = '<img width="110" height="170" id="' + ZmZimletBase.encodeId(obj + "_AIMG") + '" src="'+this.getResource('blank_pixel.gif')+'"/><div style="width:110px;" id="'+ZmZimletBase.encodeId(obj+"_ATXT")+'"> <br/> </div>';
 	if (Com_Zimbra_Amzn.CACHE[obj]) {
-		this._displayBook(Com_Zimbra_Amzn.CACHE[obj].Image, Com_Zimbra_Amzn.CACHE[obj].Book, obj);
+		Com_Zimbra_Amzn._displayBook(Com_Zimbra_Amzn.CACHE[obj].Image, Com_Zimbra_Amzn.CACHE[obj].Book, obj);
 	} else {
 		var url = ZmZimletBase.PROXY + AjxStringUtil.urlEncode(Com_Zimbra_Amzn.URL + obj.replace(/[-A-Z ]/ig,''));
 		DBG.println(AjxDebug.DBG2, "Com_Zimbra_Amzn url " + url);
-		AjxRpc.invoke(null, url, null, new AjxCallback(this, this._callback, obj), true);
+		AjxRpc.invoke(null, url, null, new AjxCallback(this, Com_Zimbra_Amzn._callback, obj), true);
 	}	
 };
 
@@ -68,11 +68,11 @@ function(obj, canvas) {
 	html[i++] = '</table></tr>';
 	canvas.innerHTML = html.join('');
 	if (Com_Zimbra_Amzn.CACHE[obj]) {
-		this._displayBooks(Com_Zimbra_Amzn.CACHE[obj], obj);
+		Com_Zimbra_Amzn._displayBooks(Com_Zimbra_Amzn.CACHE[obj], obj);
 	} else {
 		var url = ZmZimletBase.PROXY + AjxStringUtil.urlEncode(Com_Zimbra_Amzn.URL + obj);
 		DBG.println(AjxDebug.DBG2, "Com_Zimbra_Amzn url " + url);
-		AjxRpc.invoke(null, url, null, new AjxCallback(this, this._searchCallback, obj), true);
+		AjxRpc.invoke(null, url, null, new AjxCallback(this, Com_Zimbra_Amzn._searchCallback, obj), true);
 	}	
 };
 
@@ -81,7 +81,7 @@ Com_Zimbra_Amzn.prototype._getHtmlContent =
 function(html, idx, obj, context) {
 	var contentObj = this.xmlObj().getVal('contentObject');
 	html[idx++] = '<a target="_blank" href="';
-	html[idx++] = (contentObj.onClick.actionUrl.target).replace('${objectContent}', AjxStringUtil.htmlEncode(obj.replace(/[-A-Z ]/ig,'')));
+	html[idx++] = (contentObj.onClick[0].actionUrl[0].target).replace('${objectContent}', AjxStringUtil.htmlEncode(obj.replace(/[-A-Z ]/ig,'')));
 	html[idx++] = '">'+AjxStringUtil.htmlEncode(obj)+'</a>';
 	return idx;
 };
@@ -94,7 +94,7 @@ Com_Zimbra_Amzn.prototype.doubleClicked = function() {
 // Called by the Zimbra framework when the panel item was clicked
 Com_Zimbra_Amzn.prototype.singleClicked = function() {
 	var editorProps = [
-		{ label 		 : this.getMessage("amzn_search"),
+		{ label 		 : "Search",
 		  name           : "search",
 		  type           : "string",
 		  value          : "",
@@ -108,7 +108,7 @@ Com_Zimbra_Amzn.prototype.singleClicked = function() {
 		var pe = this._propertyEditor;
 		pe.initProperties(editorProps);
 		var dialog_args = {
-			title : this.getMessage("amzn_dialogTitle"),
+			title : "Search Amazon",
 			view  : view
 		};
 		this._dlg_propertyEditor = this._createDialog(dialog_args);
@@ -137,7 +137,7 @@ function(search) {
 	var view = new DwtComposite(this.getShell());
 	var dialog_args = {
 		view  : view,
-		title : this.getMessage("amzn_dialogResultTitle")
+		title : "Amazon Search Result"
 	};
 	var dlg = this._createDialog(dialog_args);
 	dlg.setButtonVisible(DwtDialog.CANCEL_BUTTON, false);
@@ -154,19 +154,19 @@ function(search) {
 };
 
 
-Com_Zimbra_Amzn.prototype._displayBook = 
+Com_Zimbra_Amzn._displayBook = 
 function(imageInfo, bookInfo, obj) {
 	var imgEl = document.getElementById(ZmZimletBase.encodeId(obj + "_AIMG"));
 	var txtEl = document.getElementById(ZmZimletBase.encodeId(obj + "_ATXT"));
 	if(!imageInfo || !bookInfo) {
-		txtEl.innerHTML = "<b><center>" + this.getMessage("amzn_searchedFor") + obj + "<br/><br/>" + this.getMessage("amzn_error") + "</center></b>";
+		txtEl.innerHTML = "<b><center>Searched for: " + obj + "<br/><br/>Error!</center></b>";
 		return;
 	}
 	imgEl.style.width = imageInfo.Width;
 	imgEl.style.height = imageInfo.Height;
 	imgEl.style.backgroundImage = "url("+imageInfo.URL+")";
 	txtEl.style.width = imageInfo.Width;
-	txtEl.innerHTML = "<a target=\"_blank\" href=\"" + bookInfo.url + "\">" + bookInfo.title + "</a>" + this.getMessage("amzn_by") + bookInfo.author +" "+ bookInfo.price;
+	txtEl.innerHTML = "<a target=\"_blank\" href=\"" + bookInfo.url + "\">" + bookInfo.title + "</a> by " + bookInfo.author +" "+ bookInfo.price;
     if(!Com_Zimbra_Amzn.CACHE[obj]) {
     	Com_Zimbra_Amzn.CACHE[obj] = new Object();
 		Com_Zimbra_Amzn.CACHE[obj].Image = imageInfo;
@@ -174,13 +174,15 @@ function(imageInfo, bookInfo, obj) {
 	}
 };
 
-Com_Zimbra_Amzn.prototype._displayBooks = 
+Com_Zimbra_Amzn._displayBooks = 
 function(items, obj) {
+	DBG.dumpObj(items);
 	for(var i=0; i < 3; i++) {
+		DBG.dumpObj(items[i]);
 		var imgEl = document.getElementById(ZmZimletBase.encodeId(obj + "_AIMG_" + i));
 		var txtEl = document.getElementById(ZmZimletBase.encodeId(obj + "_ATXT_" + i));
 		if(!items[i]) {
-			txtEl.innerHTML = "<b><center>" + this.getMessage("amzn_searchedFor") + obj + "<br/><br/>" + this.getMessage("amzn_error") + "</center></b>";
+			txtEl.innerHTML = "<b><center>Searched for: " + obj + "<br/><br/>Error!</center></b>";
 			continue;
 		}
 
@@ -189,19 +191,23 @@ function(items, obj) {
 		bookInfo.author = items[i].ItemAttributes.Author;
 		bookInfo.price = items[i].ItemAttributes.ListPrice.FormattedPrice;
 		bookInfo.url = items[i].DetailPageURL;
+		DBG.dumpObj(bookInfo);
+
 		var imageInfo = items[i].ImageSets.ImageSet.MediumImage;
+		DBG.dumpObj(imageInfo);
+
 		imgEl.style.width = imageInfo.Width;
 		imgEl.style.height = imageInfo.Height;
 		imgEl.style.backgroundImage = "url("+imageInfo.URL+")";
 		txtEl.style.width = imageInfo.Width;
-		txtEl.innerHTML = "<a target=\"_blank\" href=\"" + bookInfo.url + "\">" + bookInfo.title + "</a>" + this.getMessage("amzn_by") + bookInfo.author +" "+ bookInfo.price;
+		txtEl.innerHTML = "<a target=\"_blank\" href=\"" + bookInfo.url + "\">" + bookInfo.title + "</a> by " + bookInfo.author +" "+ bookInfo.price;
 	}
     if(!Com_Zimbra_Amzn.CACHE[obj]) {
     	Com_Zimbra_Amzn.CACHE[obj] = items;
 	}
 };
 
-Com_Zimbra_Amzn.prototype._callback = 
+Com_Zimbra_Amzn._callback = 
 function(obj, results) {
 	var result = AjxXmlDoc.createFromXml(results.text).toJSObject(true, false);
 	var bookInfo = new Object();
@@ -210,20 +216,20 @@ function(obj, results) {
 		bookInfo.author = result.Items.Item.ItemAttributes.Author;
 		bookInfo.price = result.Items.Item.ItemAttributes.ListPrice.FormattedPrice;
 		bookInfo.url = result.Items.Item.DetailPageURL;
-		this._displayBook(result.Items.Item.ImageSets.ImageSet.MediumImage, bookInfo, obj);
+		Com_Zimbra_Amzn._displayBook(result.Items.Item.ImageSets.ImageSet.MediumImage, bookInfo, obj);
 	} else {
-		this._displayBook(null, null, obj);
+		Com_Zimbra_Amzn._displayBook(null, null, obj);
 	}
 };
 
-Com_Zimbra_Amzn.prototype._searchCallback = 
+Com_Zimbra_Amzn._searchCallback = 
 function(obj, results) {
 	var result = AjxXmlDoc.createFromXml(results.text).toJSObject(true, false);
 	var bookInfo = new Object();
 	DBG.dumpObj(result);
 	if(result.Items.Item) {
-		this._displayBooks(result.Items.Item, obj);
+		Com_Zimbra_Amzn._displayBooks(result.Items.Item, obj);
 	} else {
-		this._displayBooks(null, obj);
+		Com_Zimbra_Amzn._displayBooks(null, obj);
 	}
 };
