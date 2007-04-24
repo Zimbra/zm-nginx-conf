@@ -14,9 +14,7 @@
 	<key>StandardOutPath</key>
 	<string>/opt/zimbra/log/zcs.log</string>
 	<key>OnDemand</key>
-	<true/>
-	<key>RunAtLoad</key>
-	<true/>
+	<false/>
 	<key>UserName</key>
 	<string>zimbra</string>
 	<key>GroupName</key>
