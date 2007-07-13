@@ -109,6 +109,8 @@ RESTART tomcat
 SECTION mailbox
 	VAR zimbraMailPort
 	VAR zimbraMailSSLPort
+  VAR zimbraHttpNumThreads
+  VAR zimbraHttpSSLNumThreads
 	REWRITE tomcat/conf/server.xml.in tomcat/conf/server.xml
 RESTART tomcat
 
