@@ -50,10 +50,15 @@ SECTION mta
 	VAR zimbraMtaRecipientDelimiter
 	VAR zimbraMtaMyNetworks
   VAR zimbraMtaMyOrigin
-  VAR zimbraMtaMyDestination
   VAR zimbraMtaMyHostname
 	if VAR zimbraMtaMyNetworks
 		POSTCONF mynetworks VAR zimbraMtaMyNetworks
+	fi
+	if VAR zimbraMtaMyOrigin
+		POSTCONF myorigin VAR zimbraMtaMyOrigin
+	fi
+	if VAR zimbraMtaMyDestination
+		POSTCONF mydestination VAR zimbraMtaMyDestination
 	fi
 	LOCAL zimbra_server_hostname
 	REWRITE conf/postfix_header_checks.in conf/postfix_header_checks
@@ -61,10 +66,6 @@ SECTION mta
   if VAR zimbraMtaMyHostname
     POSTCONF myhostname VAR zimbraMtaMyHostname
   fi
-  if VAR zimbraMtaMyOrigin
-    POSTCONF myorigin VAR zimbraMtaMyOrigin
-  fi
-  POSTCONF mydestination VAR zimbraMtaMyDestination
 	POSTCONF recipient_delimiter	VAR zimbraMtaRecipientDelimiter
 	POSTCONF smtpd_sasl_auth_enable VAR zimbraMtaAuthEnabled
 	POSTCONF smtpd_tls_auth_only	VAR zimbraMtaTlsAuthOnly
@@ -74,7 +75,6 @@ SECTION mta
 	POSTCONF mailbox_size_limit		0
 	POSTCONF relayhost				VAR zimbraMtaRelayHost
 	POSTCONF smtpd_recipient_restrictions FILE postfix_recipient_restrictions.cf
-  POSTCONF local_header_rewrite_clients permit_mynetworks,permit_sasl_authenticated
 
 	POSTCONF alias_maps 						LOCAL postfix_alias_maps
 	POSTCONF broken_sasl_auth_clients			LOCAL postfix_broken_sasl_auth_clients
@@ -120,8 +120,27 @@ SECTION mailbox
 	VAR zimbraMailPort
 	VAR zimbraMailSSLPort
   VAR zimbraLogToSyslog
+  VAR zimbraAdminURL
+  VAR zimbraLmtpBindPort
+  VAR zimbraPop3ServerEnabled
+  VAR zimbraPop3BindAddress
+  VAR zimbraPop3BindPort
+  VAR zimbraPop3SSLServerEnabled
+  VAR zimbraPop3SSLBindAddress
+  VAR zimbraPop3SSLBindPort
+  VAR zimbraImapServerEnabled
+  VAR zimbraImapBindAddress
+  VAR zimbraImapBindPort
+  VAR zimbraImapSSLServerEnabled
+  VAR zimbraImapSSLBindAddress
+  VAR zimbraImapSSLBindPort
+  VAR nio_imap_enabled
+  LOCAL mailboxd_keystore_password
+  LOCAL mailboxd_truststore_password
+  LOCAL zimbra_uid
+  LOCAL zimbra_gid
   REWRITE conf/log4j.properties.in conf/log4j.properties
-	REWRITE mailboxd/conf/server.xml.in mailboxd/conf/server.xml
+  REWRITE mailboxd/etc/jetty.properties.in mailboxd/etc/jetty.properties
 	REWRITE mailboxd/etc/jetty.xml.in mailboxd/etc/jetty.xml
 RESTART mailboxd
 
@@ -133,4 +152,3 @@ SECTION imapproxy
 	VAR zimbraPop3SSLProxyBindPort
 	REWRITE conf/nginx.conf.in conf/nginx.conf
 RESTART imapproxy
-
