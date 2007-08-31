@@ -120,6 +120,7 @@ SECTION mailbox
 	VAR zimbraMailSSLPort
   VAR zimbraHttpNumThreads
   VAR zimbraHttpSSLNumThreads
+  LOCAL tomcat_keystore_password
 	REWRITE tomcat/conf/server.xml.in tomcat/conf/server.xml
 RESTART tomcat
 
