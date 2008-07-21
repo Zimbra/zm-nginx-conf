@@ -29,3 +29,9 @@ events {
     worker_connections  ${main.connections};
 }
 
+# environment variables for worker processes
+# 
+
+# Kerberos 5 keytab location
+env KRB5_KTNAME=${main.krb5keytab};
+
