@@ -1,7 +1,9 @@
+!{explode vhn_ssl}
 # HTTP Proxy Configuration
 # 
 server
 {
+    ${server_name.enabled}server_name         ${vhn}; 
     listen ${web.http.port};
 
     location /
