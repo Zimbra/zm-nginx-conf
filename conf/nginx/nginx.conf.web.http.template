@@ -3,7 +3,7 @@
 server
 {
     listen ${web.http.port};
-
+    client_max_body_size 0;
     location /
     {
         include             conf/${core.includes}/${core.cprefix}.web.http.mode-${web.mailmode};
