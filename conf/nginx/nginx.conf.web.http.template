@@ -1,12 +1,9 @@
-!{explode vhn_vip_ssl}
 # HTTP Proxy Configuration
 # 
 server
 {
-    server_name         ${vhn}; 
-    listen              ${vip}:${web.http.port};
+    listen ${web.http.port};
     client_max_body_size 0;
-
     location /
     {
         include             conf/${core.includes}/${core.cprefix}.web.http.mode-${web.mailmode};

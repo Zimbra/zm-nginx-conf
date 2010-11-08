@@ -1,15 +1,11 @@
-!{explode vhn_vip_ssl}
 # IMAPS proxy configuration
 # 
 server
 {
-    server_name         ${vhn}; 
-    listen              ${vip}:${mail.imaps.port};
+    listen              ${mail.imaps.port};
     protocol            imap;
     proxy               on;
     ssl                 on;
-    ssl_certificate     ${ssl.crt};
-    ssl_certificate_key ${ssl.key};
     sasl_service_name   "imap";
 }
 

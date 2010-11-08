@@ -210,8 +210,8 @@ mail
     # TLS configuration
     # 
     ssl_prefer_server_ciphers   ${mail.ssl.preferserverciphers};
-    ssl_certificate     ${ssl.crt.default};
-    ssl_certificate_key ${ssl.key.default};
+    ssl_certificate             ${mail.ssl.cert};
+    ssl_certificate_key         ${mail.ssl.key};
     
     # Ciphers configuration
     # Permitted ciphers. Ciphers are assigned in the formats supported by OpenSSL
@@ -219,11 +219,8 @@ mail
     ssl_ciphers             ${mail.ssl.ciphers};
 
     ${mail.enabled} include conf/${core.includes}/${core.cprefix}.mail.imap;
-    ${mail.enabled} include conf/${core.includes}/${core.cprefix}.mail.imap.default;
     ${mail.enabled} include conf/${core.includes}/${core.cprefix}.mail.imaps;
-    ${mail.enabled} include conf/${core.includes}/${core.cprefix}.mail.imaps.default;
+
     ${mail.enabled} include conf/${core.includes}/${core.cprefix}.mail.pop3;
-    ${mail.enabled} include conf/${core.includes}/${core.cprefix}.mail.pop3.default;
     ${mail.enabled} include conf/${core.includes}/${core.cprefix}.mail.pop3s;
-    ${mail.enabled} include conf/${core.includes}/${core.cprefix}.mail.pop3s.default;
 }
