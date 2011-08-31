@@ -14,7 +14,6 @@ server
     ssl_certificate         ${ssl.crt};
     ssl_certificate_key     ${ssl.key};
 
-
     location /
     {
         include             ${core.includes}/${core.cprefix}.web.https.mode-${web.mailmode};
@@ -124,10 +123,5 @@ server
 
         # Fudge inter-mailbox redirects (kludge)
         proxy_redirect http://$relhost/ https://$http_host/;
-    }
-
-    location ~* ^/zmerror_.*\.html$ {
-        # for custom error pages, internal use only
-        internal;
     }
 }
