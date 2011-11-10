@@ -12,10 +12,17 @@ http
         zmauth;
     }
 
-    # HTTP route lookup handlers
-    # 
-    ${web.:routehandlers}
-    zmroute_timeout ${web.routetimeout};
+    #  Define the coolection of upstream admin console servers to which we will
+    #  proxy. Define each server:port against a server directive
+    #
+    upstream ${web.admin.upstream.name}
+    {
+        ${web.admin.upstream.:servers}
+        zmauth_admin;
+    }
+
+    #custom error pages for upstream connection errors
+    ${web.:error_pages}
 
     ${ssl.clientcertca.enabled}ssl_client_certificate  ${ssl.clientcertca.default};
 
@@ -25,4 +32,6 @@ http
     ${web.https.enabled}include ${core.includes}/${core.cprefix}.web.https.default;
     ${web.sso.enabled}include ${core.includes}/${core.cprefix}.web.sso;
     ${web.sso.default.enabled}include ${core.includes}/${core.cprefix}.web.sso.default;
+    ${web.admin.default.enabled}include ${core.includes}/${core.cprefix}.web.admin;
+    ${web.admin.default.enabled}include ${core.includes}/${core.cprefix}.web.admin.default;
 }
