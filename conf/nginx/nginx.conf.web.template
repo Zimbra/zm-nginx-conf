@@ -13,9 +13,13 @@ http
     }
 
     # HTTP route lookup handlers
-    # 
+    #
     ${web.:routehandlers}
     zmroute_timeout ${web.routetimeout};
+
+    # Set proxy timeout
+    proxy_read_timeout ${web.upstream.read.timeout};
+    proxy_send_timeout ${web.upstream.send.timeout};
 
     ${ssl.clientcertca.enabled}ssl_client_certificate  ${ssl.clientcertca.default};
 
