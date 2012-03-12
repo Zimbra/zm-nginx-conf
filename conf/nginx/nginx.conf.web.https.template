@@ -1,4 +1,4 @@
-!{explode vhn_vip_ssl}
+!{explode domain(vhn)}
 # HTTPS Proxy Configuration
 # 
 server
@@ -13,6 +13,7 @@ server
     ssl_ciphers             ${web.ssl.ciphers};
     ssl_certificate         ${ssl.crt};
     ssl_certificate_key     ${ssl.key};
+
 
     location /
     {
@@ -45,7 +46,7 @@ server
         # End stray redirect hack
 
         # Proxy to Zimbra Upstream
-        proxy_pass          http://${web.upstream.name};
+        proxy_pass     ${web.upstream.target};
 
         # For audit
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -100,7 +101,7 @@ server
         # End stray redirect hack
 
         # Proxy to Zimbra Upstream
-        proxy_pass          http://${web.upstream.name};
+        proxy_pass          ${web.upstream.target};
         proxy_read_timeout  ${web.upstream.polling.timeout};
         proxy_buffering     off;
 
@@ -123,5 +124,10 @@ server
 
         # Fudge inter-mailbox redirects (kludge)
         proxy_redirect http://$relhost/ https://$http_host/;
+    }
+
+    location ~* ^/zmerror_.*\.html$ {
+        # for custom error pages, internal use only
+        internal;
     }
 }
