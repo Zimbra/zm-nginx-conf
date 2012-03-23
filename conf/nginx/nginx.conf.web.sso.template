@@ -1,4 +1,4 @@
-!{explode vhn_vip_ssl}
+!{explode domain(vhn, sso)}
 
 #client cert auth
 server {
@@ -20,6 +20,11 @@ server {
 ${web.sso.certauth.enabled}    location = /certauth {
 ${web.sso.certauth.enabled}        zm_sso certauth;
 ${web.sso.certauth.enabled}        zm_sso_redirect_url ${vhn}:${web.https.port};
+${web.sso.certauth.enabled}    }
+
+${web.sso.certauth.enabled}    location = /certauth/admin {
+${web.sso.certauth.enabled}        zm_sso certauth_admin;
+${web.sso.certauth.enabled}        zm_sso_redirect_url ${vhn}:${web.admin.port};
 ${web.sso.certauth.enabled}    }
 
     location / {
