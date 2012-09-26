@@ -18,16 +18,38 @@ http
         zmauth;
     }
 
-    # HTTP route lookup handlers
+    #  Define the collection of upstream HTTPS servers to which we will proxy
+    #  Define each server:port against a server directive
+    upstream ${web.ssl.upstream.name}
+    {
+        ${web.ssl.upstream.:servers}
+        zmauth;
+    }
+
+    #  Define the collection of upstream admin console servers to which we will
+    #  proxy. Define each server:port against a server directive
     #
-    ${web.:routehandlers}
-    zmroute_timeout ${web.routetimeout};
+    upstream ${web.admin.upstream.name}
+    {
+        ${web.admin.upstream.:servers}
+        zmauth_admin;
+    }
 
     # Set proxy timeout
     proxy_read_timeout ${web.upstream.read.timeout};
     proxy_send_timeout ${web.upstream.send.timeout};
 
+    # Custom error pages for upstream connection errors
+    ${web.:error_pages}
+
     ${ssl.clientcertca.enabled}ssl_client_certificate  ${ssl.clientcertca.default};
+
+    # handle chunking encoded request
+    chunkin on;
+    error_page 411 = @chunkin_handler;
+
+    # turn on tcp keepalive
+    tcp_keepalive on;
 
     ${web.http.enabled}include ${core.includes}/${core.cprefix}.web.http;
     ${web.http.enabled}include ${core.includes}/${core.cprefix}.web.http.default;
@@ -35,4 +57,6 @@ http
     ${web.https.enabled}include ${core.includes}/${core.cprefix}.web.https.default;
     ${web.sso.enabled}include ${core.includes}/${core.cprefix}.web.sso;
     ${web.sso.default.enabled}include ${core.includes}/${core.cprefix}.web.sso.default;
+    ${web.admin.default.enabled}include ${core.includes}/${core.cprefix}.web.admin;
+    ${web.admin.default.enabled}include ${core.includes}/${core.cprefix}.web.admin.default;
 }
