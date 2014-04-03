@@ -39,11 +39,11 @@ http
     #  Define the collection of upstream EWS servers to which we will
     #  proxy EWS request. Define each server:port against a server directive
     #
-    upstream ${web.ews.upstream.name}
-    {
-        ${web.upstream.ewsserver.:servers}
-        zmauth;
-    }
+    ${web.ews.upstream.disable} upstream ${web.ews.upstream.name}
+    ${web.ews.upstream.disable} {
+    ${web.ews.upstream.disable}     ${web.upstream.ewsserver.:servers}
+    ${web.ews.upstream.disable}     zmauth;
+    ${web.ews.upstream.disable} }
 
 
     # Enable Access logs for web traffic
