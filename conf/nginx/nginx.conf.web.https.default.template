@@ -238,36 +238,33 @@ server
     }
 
 
-    location ^~ /ews/Exchange.asmx
-    {
-        # End stray redirect hack
-
-        # Proxy to Zimbra Upstream
-        proxy_pass          https://${web.ews.upstream.name};
-        proxy_read_timeout  ${web.upstream.polling.timeout};
-        proxy_buffering     off;
-
-        # For audit
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-
-        # For Virtual Hosting
-        set $virtual_host $http_host;
-        if ($virtual_host = '') {
-            set $virtual_host $server_addr:$server_port;
-        }
-        proxy_set_header Host            $virtual_host;
-
-        # Location header fudging
-        # Because NGINX SSL speaks plain HTTP to upstream, therefore any
-        # redirects to http:// coming from the upstream need to be fudged
-        # to https://
-        #
-        proxy_redirect http://$http_host/ https://$http_host/;
-
-        # Fudge inter-mailbox redirects (kludge)
-        proxy_redirect http://$relhost/ https://$http_host/;
-    }
-
+    ${web.ews.upstream.disable} location ^~ /ews/Exchange.asmx
+    ${web.ews.upstream.disable} {
+    ${web.ews.upstream.disable}     # Proxy to Zimbra Upstream
+    ${web.ews.upstream.disable}     proxy_pass          https://${web.ews.upstream.name};
+    ${web.ews.upstream.disable}     proxy_read_timeout  ${web.upstream.polling.timeout};
+    ${web.ews.upstream.disable}     proxy_buffering     off;
+    ${web.ews.upstream.disable}
+    ${web.ews.upstream.disable}     # For audit
+    ${web.ews.upstream.disable}     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    ${web.ews.upstream.disable}
+    ${web.ews.upstream.disable}     # For Virtual Hosting
+    ${web.ews.upstream.disable}     set $virtual_host $http_host;
+    ${web.ews.upstream.disable}     if ($virtual_host = '') {
+    ${web.ews.upstream.disable}        set $virtual_host $server_addr:$server_port;
+    ${web.ews.upstream.disable}     }
+    ${web.ews.upstream.disable}     proxy_set_header Host            $virtual_host;
+    ${web.ews.upstream.disable}
+    ${web.ews.upstream.disable}     # Location header fudging
+    ${web.ews.upstream.disable}     # Because NGINX SSL speaks plain HTTP to upstream, therefore any
+    ${web.ews.upstream.disable}     # redirects to http:// coming from the upstream need to be fudged
+    ${web.ews.upstream.disable}     # to https://
+    ${web.ews.upstream.disable}     #
+    ${web.ews.upstream.disable}     proxy_redirect http://$http_host/ https://$http_host/;
+    ${web.ews.upstream.disable}
+    ${web.ews.upstream.disable}     # Fudge inter-mailbox redirects (kludge)
+    ${web.ews.upstream.disable}     proxy_redirect http://$relhost/ https://$http_host/;
+    ${web.ews.upstream.disable} }
 
 
     location ~* ^/zmerror_.*\.html$ {
