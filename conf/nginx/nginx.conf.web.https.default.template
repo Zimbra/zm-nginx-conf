@@ -241,7 +241,7 @@ server
     ${web.ews.upstream.disable} location ^~ /ews/Exchange.asmx
     ${web.ews.upstream.disable} {
     ${web.ews.upstream.disable}     # Proxy to Zimbra Upstream
-    ${web.ews.upstream.disable}     proxy_pass          https://${web.ews.upstream.name};
+    ${web.ews.upstream.disable}     proxy_pass          https://${web.ssl.ews.upstream.name};
     ${web.ews.upstream.disable}     proxy_read_timeout  ${web.upstream.polling.timeout};
     ${web.ews.upstream.disable}     proxy_buffering     off;
     ${web.ews.upstream.disable}

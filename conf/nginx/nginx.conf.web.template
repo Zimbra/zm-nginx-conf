@@ -36,12 +36,21 @@ http
         zmauth_admin;
     }
    
-    #  Define the collection of upstream EWS servers to which we will
+    #  Define the collection of upstream HTTP EWS servers to which we will
     #  proxy EWS request. Define each server:port against a server directive
     #
     ${web.ews.upstream.disable} upstream ${web.ews.upstream.name}
     ${web.ews.upstream.disable} {
     ${web.ews.upstream.disable}    ${web.upstream.ewsserver.:servers}
+    ${web.ews.upstream.disable}    zmauth;
+    ${web.ews.upstream.disable} }
+    
+    #  Define the collection of upstream HTTPS EWS servers to which we will
+    #  proxy EWS request. Define each server:port against a server directive
+    #
+    ${web.ews.upstream.disable} upstream ${web.ssl.ews.upstream.name}
+    ${web.ews.upstream.disable} {
+    ${web.ews.upstream.disable}    ${web.ssl.upstream.ewsserver.:servers}
     ${web.ews.upstream.disable}    zmauth;
     ${web.ews.upstream.disable} }
 
