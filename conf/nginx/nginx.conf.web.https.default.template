@@ -13,6 +13,34 @@ server
     ssl_certificate         ${ssl.crt.default};
     ssl_certificate_key     ${ssl.key.default};
     
+    ${web.login.upstream.disable} location = ${web.login.upstream.url}
+    ${web.login.upstream.disable} {   
+    ${web.login.upstream.disable}     # Proxy to Zimbra Login Upstream
+    ${web.login.upstream.disable}     proxy_pass          https://${web.ssl.login.upstream.name};
+    ${web.login.upstream.disable}     proxy_read_timeout  ${web.upstream.polling.timeout};
+    ${web.login.upstream.disable}     proxy_buffering     off;
+    ${web.login.upstream.disable}
+    ${web.login.upstream.disable}     # For audit
+    ${web.login.upstream.disable}     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    ${web.login.upstream.disable}
+    ${web.login.upstream.disable}     # For Virtual Hosting
+    ${web.login.upstream.disable}     set $virtual_host $http_host;
+    ${web.login.upstream.disable}     if ($virtual_host = '') {
+    ${web.login.upstream.disable}        set $virtual_host $server_addr:$server_port;
+    ${web.login.upstream.disable}     }
+    ${web.login.upstream.disable}     proxy_set_header Host            $virtual_host;
+    ${web.login.upstream.disable}
+    ${web.login.upstream.disable}     # Location header fudging
+    ${web.login.upstream.disable}     # Because NGINX SSL speaks plain HTTP to upstream, therefore any
+    ${web.login.upstream.disable}     # redirects to http:// coming from the upstream need to be fudged
+    ${web.login.upstream.disable}     # to https://
+    ${web.login.upstream.disable}     #
+    ${web.login.upstream.disable}     proxy_redirect http://$http_host/ https://$http_host/;
+    ${web.login.upstream.disable}
+    ${web.login.upstream.disable}     # Fudge inter-mailbox redirects (kludge)
+    ${web.login.upstream.disable}     proxy_redirect http://$relhost/ https://$http_host/;
+    ${web.login.upstream.disable} }
+    
     location /
     {
         include             ${core.includes}/${core.cprefix}.web.https.mode-${web.mailmode};
