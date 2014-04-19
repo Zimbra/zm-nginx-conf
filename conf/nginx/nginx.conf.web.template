@@ -9,16 +9,33 @@ http
     server_names_hash_max_size ${web.server_names.max_size};
     server_names_hash_bucket_size ${web.server_names.bucket_size};
 
+    # Define the collection of upstream HTTP webclient servers to which we will proxy
+    # Define each server:port against a server directive
+    #
+    upstream ${web.upstream.webclient.name}
+    {
+        ${web.upstream.webclient.:servers}
+        zmauth;
+    }
+    
     #  Define the collection of upstream HTTP servers to which we will proxy
     #  Define each server:port against a server directive
     #
     upstream ${web.upstream.name}
     {
         ${web.upstream.:servers}
-
         zmauth;
     }
 
+    #  Define the collection of upstream HTTPS webclient servers to which we will proxy
+    #  Define each server:port against a server directive
+    #
+    upstream ${web.ssl.upstream.webclient.name}
+    {
+        ${web.ssl.upstream.webclient.:servers}
+        zmauth;
+    }
+    
     #  Define the collection of upstream HTTPS servers to which we will proxy
     #  Define each server:port against a server directive
     upstream ${web.ssl.upstream.name}
@@ -27,6 +44,15 @@ http
         zmauth;
     }
 
+     #  Define the collection of upstream admin client servers to which we will
+    #  proxy. Define each server:port against a server directive
+    #
+    upstream ${web.admin.upstream.adminclient.name}
+    {
+        ${web.admin.upstream.adminclient.:servers}
+        zmauth_admin;
+    }
+    
     #  Define the collection of upstream admin console servers to which we will
     #  proxy. Define each server:port against a server directive
     #
@@ -53,8 +79,7 @@ http
     ${web.ews.upstream.disable}    ${web.ssl.upstream.ewsserver.:servers}
     ${web.ews.upstream.disable}    zmauth;
     ${web.ews.upstream.disable} }
-
-
+    
     # Enable Access logs for web traffic
     log_format upstream '$remote_addr:$remote_port - $remote_user [$time_local]  '
       '"$request" $status $bytes_sent '
