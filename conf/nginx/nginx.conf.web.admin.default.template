@@ -14,28 +14,6 @@ server
 
     location /
     {
-        # Proxy to Zimbra adminclient Upstream
-        proxy_pass          https://${web.admin.upstream.adminclient.name};
-
-        # For audit
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-
-        # For admin console, the proxied request must have ${web.admin.uport}
-        # in Host header. Otherwise, the web client page or error might be returned.
-        #
-        set $relhost $host;
-        if ($host = '') {
-            set $relhost $server_addr;
-        }
-        proxy_set_header Host            $relhost:${web.admin.uport};
-
-        # Avoid leak the ${web.admin.uport} in the response such as 302 redirection
-        #
-        proxy_redirect https://$relhost:${web.admin.uport}/ https://$relhost:${web.admin.port}/;
-    }
-
-    location ^~ /service
-    {
         # Proxy to Zimbra Upstream
         proxy_pass          https://${web.admin.upstream.name};
 
@@ -54,5 +32,5 @@ server
         # Avoid leak the ${web.admin.uport} in the response such as 302 redirection
         #
         proxy_redirect https://$relhost:${web.admin.uport}/ https://$relhost:${web.admin.port}/;
-    }   
+    }
 }
