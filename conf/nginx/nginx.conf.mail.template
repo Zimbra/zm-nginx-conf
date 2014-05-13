@@ -203,12 +203,8 @@ mail
     #
     ssl_ciphers             ${mail.ssl.ciphers};
 
-    ${mail.enabled}include ${core.includes}/${core.cprefix}.mail.imap;
     ${mail.enabled}include ${core.includes}/${core.cprefix}.mail.imap.default;
-    ${mail.enabled}include ${core.includes}/${core.cprefix}.mail.imaps;
     ${mail.enabled}include ${core.includes}/${core.cprefix}.mail.imaps.default;
-    ${mail.enabled}include ${core.includes}/${core.cprefix}.mail.pop3;
     ${mail.enabled}include ${core.includes}/${core.cprefix}.mail.pop3.default;
-    ${mail.enabled}include ${core.includes}/${core.cprefix}.mail.pop3s;
     ${mail.enabled}include ${core.includes}/${core.cprefix}.mail.pop3s.default;
 }
