@@ -43,8 +43,6 @@ server
     
     location /
     {
-        include             ${core.includes}/${core.cprefix}.web.https.mode-${web.mailmode};
-
         # Begin stray redirect hack
         # 
         # In some cases, we may get a stray redirect out of the mailhost,
@@ -97,8 +95,6 @@ server
 
     location ~* /(service|principals|dav|\.well-known|home|octopus|shf|user|certauth|spnegoauth|(zimbra/home)|(zimbra/user)|autodiscover)/
     {
-        include             ${core.includes}/${core.cprefix}.web.https.mode-${web.mailmode};
-
         # Begin stray redirect hack
         #
         # In some cases, we may get a stray redirect out of the mailhost,
@@ -152,8 +148,6 @@ server
     #For long polling of Microsoft ActiveSync
     location ^~ /Microsoft-Server-ActiveSync
     {
-        include             ${core.includes}/${core.cprefix}.web.https.mode-${web.mailmode};
-
         # Begin stray redirect hack
         #
         # In some cases, we may get a stray redirect out of the mailhost,
@@ -208,7 +202,6 @@ server
 
     # For NoOpRequest
     location ^~ /service/soap/NoOpRequest {
-        include             ${core.includes}/${core.cprefix}.web.https.mode-${web.mailmode};
 
         # Begin stray redirect hack
         #
@@ -264,7 +257,6 @@ server
 
     # For WaitSetRequest
     location ^~ /service/soap/WaitSetRequest {
-        include             ${core.includes}/${core.cprefix}.web.https.mode-${web.mailmode};
 
         # Begin stray redirect hack
         #
