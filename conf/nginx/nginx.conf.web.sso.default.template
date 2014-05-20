@@ -7,6 +7,7 @@ server {
     ssl                     on;
     ssl_prefer_server_ciphers ${web.ssl.preferserverciphers};
     ssl_ciphers             ${web.ssl.ciphers};
+    ssl_ecdh_curve          ${web.ssl.ecdh.curve};
     ssl_certificate         ${ssl.crt.default};
     ssl_certificate_key     ${ssl.key.default};
     ssl_verify_client       ${ssl.clientcertmode.default};
