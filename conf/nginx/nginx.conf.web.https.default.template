@@ -14,6 +14,11 @@ server
     ssl_certificate         ${ssl.crt.default};
     ssl_certificate_key     ${ssl.key.default};
     
+    set $login_upstream     https://${web.ssl.login.upstream.name};
+    if ($http_cookie ~ "ZM_AUTH_TOKEN=") {
+        set $login_upstream    ${web.upstream.webclient.target};
+    }
+    
     ${web.login.upstream.disable} location = ${web.login.upstream.url}/
     ${web.login.upstream.disable} {   
     ${web.login.upstream.disable}     set $mailhostport ${web.http.uport};   # replace this with *the* mailhost port
@@ -24,7 +29,7 @@ server
     ${web.login.upstream.disable}     }
     ${web.login.upstream.disable}                                  
     ${web.login.upstream.disable}     # Proxy to Zimbra Login Upstream
-    ${web.login.upstream.disable}     proxy_pass          https://${web.ssl.login.upstream.name};
+    ${web.login.upstream.disable}     proxy_pass          $login_upstream;
     ${web.login.upstream.disable}
     ${web.login.upstream.disable}     # For audit
     ${web.login.upstream.disable}     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -57,7 +62,7 @@ server
     ${web.login.upstream.disable}     }
     ${web.login.upstream.disable}                                  
     ${web.login.upstream.disable}     # Proxy to Zimbra Login Upstream
-    ${web.login.upstream.disable}     proxy_pass          https://${web.ssl.login.upstream.name};
+    ${web.login.upstream.disable}     proxy_pass          $login_upstream;
     ${web.login.upstream.disable}
     ${web.login.upstream.disable}     # For audit
     ${web.login.upstream.disable}     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;

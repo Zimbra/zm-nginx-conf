@@ -8,6 +8,11 @@ server
     server_name             ${web.server_name.default}.default;
     client_max_body_size 0;
 
+    set $login_upstream     http://${web.login.upstream.name};
+    if ($http_cookie ~ "ZM_AUTH_TOKEN=") {
+        set $login_upstream    ${web.upstream.webclient.target};
+    }
+    
     ${web.login.upstream.disable} location = ${web.login.upstream.url}/
     ${web.login.upstream.disable} {   
     ${web.login.upstream.disable}     set $mailhostport ${web.http.uport};   # replace this with *the* mailhost port
@@ -18,7 +23,7 @@ server
     ${web.login.upstream.disable}     }
     ${web.login.upstream.disable}                                  
     ${web.login.upstream.disable}     # Proxy to Zimbra Login Upstream
-    ${web.login.upstream.disable}     proxy_pass          http://${web.login.upstream.name};
+    ${web.login.upstream.disable}     proxy_pass          $login_upstream;
     ${web.login.upstream.disable}
     ${web.login.upstream.disable}     # For audit
     ${web.login.upstream.disable}     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -44,7 +49,7 @@ server
     ${web.login.upstream.disable}     }
     ${web.login.upstream.disable}                                  
     ${web.login.upstream.disable}     # Proxy to Zimbra Login Upstream
-    ${web.login.upstream.disable}     proxy_pass          http://${web.login.upstream.name};
+    ${web.login.upstream.disable}     proxy_pass          $login_upstream;
     ${web.login.upstream.disable}
     ${web.login.upstream.disable}     # For audit
     ${web.login.upstream.disable}     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
