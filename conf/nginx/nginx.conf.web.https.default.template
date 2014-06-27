@@ -13,6 +13,8 @@ server
     ssl_ecdh_curve          ${web.ssl.ecdh.curve};
     ssl_certificate         ${ssl.crt.default};
     ssl_certificate_key     ${ssl.key.default};
+    ssl_verify_client       ${ssl.clientcertmode.default};
+    ssl_verify_depth        ${ssl.clientcertdepth.default};
     
     set $login_upstream     https://${web.ssl.login.upstream.name};
     if ($http_cookie ~ "ZM_AUTH_TOKEN=") {
