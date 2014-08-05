@@ -1,11 +1,12 @@
-# HTTP Proxy Default Configuration
+!{explode domain(vhn)}
+# HTTP Proxy Configuration
 # 
 server
 {
-    ${core.ipboth.enabled}listen    [::]:${web.http.port} default;
-    ${core.ipv4only.enabled}listen    ${web.http.port} default;
-    ${core.ipv6only.enabled}listen    [::]:${web.http.port} default ipv6only=on;
-    server_name             ${web.server_name.default}.default;
+    server_name         ${vhn}; 
+    ${core.ipboth.enabled}listen            ${vip}:${web.http.port};
+    ${core.ipv4only.enabled}listen            ${vip}:${web.http.port};
+    ${core.ipv6only.enabled}listen            ${vip}:${web.http.port} ipv6only=on;
     client_max_body_size 0;
 
     location /
@@ -39,7 +40,7 @@ server
         # End stray redirect hack
 
         # Proxy to Zimbra Upstream
-        proxy_pass ${web.upstream.target};
+        proxy_pass     ${web.upstream.target};
 
         # For audit
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -47,7 +48,7 @@ server
         # For Virtual Hosting
         set $virtual_host $http_host;
         if ($virtual_host = '') {
-            set $virtual_host $server_addr:$server_port;
+            set $virtual_host $server_name:$server_port;
         }
         proxy_set_header Host            $virtual_host;
 
@@ -87,8 +88,7 @@ server
         # End stray redirect hack
 
         # Proxy to Zimbra Upstream
-        proxy_pass ${web.upstream.target};
-
+        proxy_pass         ${web.upstream.target};
         proxy_read_timeout ${web.upstream.polling.timeout};
         proxy_buffering    off;
 
@@ -98,7 +98,7 @@ server
         # For Virtual Hosting
         set $virtual_host $http_host;
         if ($virtual_host = '') {
-            set $virtual_host $server_addr:$server_port;
+            set $virtual_host $server_name:$server_port;
         }
         proxy_set_header Host            $virtual_host;
 
@@ -109,7 +109,7 @@ server
     # For NoOpRequest
     location /service/soap/NoOpRequest {
         include             ${core.includes}/${core.cprefix}.web.http.mode-${web.mailmode};
-
+    
         # Begin stray redirect hack
         #
         # In some cases, we may get a stray redirect out of the mailhost,
@@ -159,7 +159,7 @@ server
     # For WaitSetRequest
     location /service/soap/WaitSetRequest {
         include             ${core.includes}/${core.cprefix}.web.http.mode-${web.mailmode};
-    
+
         # Begin stray redirect hack
         #
         # In some cases, we may get a stray redirect out of the mailhost,
