@@ -15,9 +15,8 @@ server
     ssl_certificate_key     ${ssl.key.default};
     ssl_verify_client       ${ssl.clientcertmode.default};
     ssl_verify_depth        ${ssl.clientcertdepth.default};
-    include                 ${core.includes}/${core.cprefix}.web.https.mode-${web.mailmode};
     
-    set $login_upstream     ${web.upstream.login.target};
+    set $login_upstream     https://${web.ssl.login.upstream.name};
     if ($http_cookie ~ "ZM_AUTH_TOKEN=") {
         set $login_upstream    ${web.upstream.webclient.target};
     }
@@ -333,7 +332,7 @@ server
 
         set $autodiscover_upstream     ${web.upstream.target};
         ${web.ews.upstream.disable}    if ($http_user_agent ~ "ExchangeWebServices") {
-        ${web.ews.upstream.disable}       set $autodiscover_upstream    ${web.upstream.ews.target};
+        ${web.ews.upstream.disable}       set $autodiscover_upstream    https://${web.ssl.ews.upstream.name};
         ${web.ews.upstream.disable}    }
         
         # End stray redirect hack
@@ -375,7 +374,7 @@ server
     ${web.ews.upstream.disable} location ~* ^/ews/Exchange.asmx
     ${web.ews.upstream.disable} {
     ${web.ews.upstream.disable}     # Proxy to Zimbra Upstream
-    ${web.ews.upstream.disable}     proxy_pass          ${web.upstream.ews.target};
+    ${web.ews.upstream.disable}     proxy_pass          https://${web.ssl.ews.upstream.name};
     ${web.ews.upstream.disable}     proxy_read_timeout  ${web.upstream.polling.timeout};
     ${web.ews.upstream.disable}     proxy_buffering     off;
     ${web.ews.upstream.disable}
