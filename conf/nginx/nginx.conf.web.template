@@ -127,8 +127,12 @@ http
     # turn on tcp keepalive
     tcp_keepalive on;
 
+    ${web.http.enabled}include ${core.includes}/${core.cprefix}.web.http;
     ${web.http.enabled}include ${core.includes}/${core.cprefix}.web.http.default;
+    ${web.https.enabled}include ${core.includes}/${core.cprefix}.web.https;
     ${web.https.enabled}include ${core.includes}/${core.cprefix}.web.https.default;
+    ${web.sso.default.enabled}include ${core.includes}/${core.cprefix}.web.sso;
     ${web.sso.default.enabled}include ${core.includes}/${core.cprefix}.web.sso.default;
+    ${web.admin.default.enabled}include ${core.includes}/${core.cprefix}.web.admin;
     ${web.admin.default.enabled}include ${core.includes}/${core.cprefix}.web.admin.default;
 }

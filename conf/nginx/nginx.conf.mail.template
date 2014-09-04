@@ -206,8 +206,12 @@ mail
     # SSL ECDH cipher curve configuration
     ssl_ecdh_curve          ${mail.ssl.ecdh.curve};
     
+    ${mail.imap.enabled} include ${core.includes}/${core.cprefix}.mail.imap;
     ${mail.imap.enabled} include ${core.includes}/${core.cprefix}.mail.imap.default;
+    ${mail.imaps.enabled} include ${core.includes}/${core.cprefix}.mail.imaps;
     ${mail.imaps.enabled} include ${core.includes}/${core.cprefix}.mail.imaps.default;
+    ${mail.pop3.enabled} include ${core.includes}/${core.cprefix}.mail.pop3;
     ${mail.pop3.enabled} include ${core.includes}/${core.cprefix}.mail.pop3.default;
+    ${mail.pop3s.enabled} include ${core.includes}/${core.cprefix}.mail.pop3s;
     ${mail.pop3s.enabled} include ${core.includes}/${core.cprefix}.mail.pop3s.default;
 }
