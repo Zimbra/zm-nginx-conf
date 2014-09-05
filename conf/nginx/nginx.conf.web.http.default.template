@@ -7,8 +7,9 @@ server
     ${core.ipv6only.enabled}listen    [::]:${web.http.port} default ipv6only=on;
     server_name             ${web.server_name.default}.default;
     client_max_body_size 0;
-
-    set $login_upstream     http://${web.login.upstream.name};
+    include                 ${core.includes}/${core.cprefix}.web.http.mode-${web.mailmode};
+    
+    set $login_upstream     ${web.upstream.login.target};
     if ($http_cookie ~ "ZM_AUTH_TOKEN=") {
         set $login_upstream    ${web.upstream.webclient.target};
     }
@@ -285,7 +286,7 @@ server
 
         set $autodiscover_upstream     ${web.upstream.target};
         ${web.ews.upstream.disable}    if ($http_user_agent ~ "ExchangeWebServices") {
-        ${web.ews.upstream.disable}       set $autodiscover_upstream    http://${web.ews.upstream.name};
+        ${web.ews.upstream.disable}       set $autodiscover_upstream    ${web.upstream.ews.target};
         ${web.ews.upstream.disable}    }
         
         # End stray redirect hack
@@ -320,7 +321,7 @@ server
     ${web.ews.upstream.disable} location ~* ^/ews/Exchange.asmx
     ${web.ews.upstream.disable} {
     ${web.ews.upstream.disable}     # Proxy to Zimbra Upstream
-    ${web.ews.upstream.disable}     proxy_pass          http://${web.ews.upstream.name};
+    ${web.ews.upstream.disable}     proxy_pass          ${web.upstream.ews.target};
     ${web.ews.upstream.disable}     proxy_read_timeout  ${web.upstream.polling.timeout};
     ${web.ews.upstream.disable}     proxy_buffering     off;
     ${web.ews.upstream.disable} 
