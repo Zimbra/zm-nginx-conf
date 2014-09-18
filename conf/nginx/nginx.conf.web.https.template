@@ -458,9 +458,5 @@ server
         internal;
     }
 
-    #chunkin handler
-    location @chunkin_handler {
-        chunkin_resume;
-    }
 }
 
