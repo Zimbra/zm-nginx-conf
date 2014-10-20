@@ -198,9 +198,10 @@ mail
     ssl_certificate     ${ssl.crt.default};
     ssl_certificate_key ${ssl.key.default};
     
-    # Ciphers configuration
-    # Permitted ciphers. Ciphers are assigned in the formats supported by OpenSSL
+    # SSL Protocols & Ciphers configuration
+    # Enabled protocols & Permitted ciphers. Ciphers are assigned in the formats supported by OpenSSL
     #
+    ssl_protocols           ${mail.ssl.protocols};
     ssl_ciphers             ${mail.ssl.ciphers};
 
     # SSL ECDH cipher curve configuration

@@ -5,6 +5,7 @@ server {
     ${core.ipv6only.enabled}listen                [::]:${web.sso.certauth.port} default ipv6only=on;
 
     ssl                     on;
+    ssl_protocols           ${web.ssl.protocols};
     ssl_prefer_server_ciphers ${web.ssl.preferserverciphers};
     ssl_ciphers             ${web.ssl.ciphers};
     ssl_ecdh_curve          ${web.ssl.ecdh.curve};

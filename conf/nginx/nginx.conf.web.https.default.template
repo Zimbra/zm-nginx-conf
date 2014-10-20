@@ -8,6 +8,7 @@ server
     server_name             ${web.server_name.default}.default;
     client_max_body_size    0;
     ssl                     on;
+    ssl_protocols           ${web.ssl.protocols};
     ssl_prefer_server_ciphers ${web.ssl.preferserverciphers};
     ssl_ciphers             ${web.ssl.ciphers};
     ssl_ecdh_curve          ${web.ssl.ecdh.curve};
@@ -457,4 +458,8 @@ server
         internal;
     }
 
+    #chunkin handler
+    location @chunkin_handler {
+        chunkin_resume;
+    }
 }
