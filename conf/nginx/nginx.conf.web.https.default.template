@@ -18,11 +18,6 @@ server
     ssl_verify_depth        ${ssl.clientcertdepth.default};
     include                 ${core.includes}/${core.cprefix}.web.https.mode-${web.mailmode};
     
-    set $login_upstream     ${web.upstream.login.target};
-    if ($http_cookie ~ "ZM_AUTH_TOKEN=") {
-        set $login_upstream    ${web.upstream.webclient.target};
-    }
-    
     ${web.login.upstream.disable} location = ${web.login.upstream.url}/
     ${web.login.upstream.disable} {   
     ${web.login.upstream.disable}     set $mailhostport ${web.http.uport};   # replace this with *the* mailhost port
