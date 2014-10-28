@@ -19,6 +19,11 @@ server
     ssl_verify_client       ${ssl.clientcertmode};
     include                 ${core.includes}/${core.cprefix}.web.https.mode-${web.mailmode};
     
+    set $login_upstream     ${web.upstream.login.target};
+    if ($http_cookie ~ "ZM_AUTH_TOKEN=") {
+        set $login_upstream    ${web.upstream.webclient.target};
+    }
+    
     ${web.login.upstream.disable} location = ${web.login.upstream.url}/
     ${web.login.upstream.disable} {   
     ${web.login.upstream.disable}     set $mailhostport ${web.http.uport};   # replace this with *the* mailhost port
@@ -454,5 +459,9 @@ server
         internal;
     }
 
+    #chunkin handler
+    location @chunkin_handler {
+        chunkin_resume;
+    }
 }
 

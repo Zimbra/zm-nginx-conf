@@ -120,13 +120,12 @@ http
 
     ${ssl.clientcertca.enabled}ssl_client_certificate  ${ssl.clientcertca.default};
 
+    # handle chunking encoded request
+    chunkin on;
+    error_page 411 = @chunkin_handler;
+
     # turn on tcp keepalive
     tcp_keepalive on;
-    
-    map $http_cookie $login_upstream {
-        default ${web.upstream.login.target};
-        "~ZM_AUTH_TOKEN" ${web.upstream.webclient.target};
-    }
 
     ${web.http.enabled}include ${core.includes}/${core.cprefix}.web.http;
     ${web.http.enabled}include ${core.includes}/${core.cprefix}.web.http.default;
