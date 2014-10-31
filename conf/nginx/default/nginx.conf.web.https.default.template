@@ -16,7 +16,7 @@ server
     ssl_certificate_key     ${ssl.key.default};
     ssl_verify_client       ${ssl.clientcertmode.default};
     ssl_verify_depth        ${ssl.clientcertdepth.default};
-    include                 ${core.includes}/${core.cprefix}.web.https.mode-${web.mailmode};
+    include                 ${core.includes.webmode}/${core.cprefix}.web.https.mode-${web.mailmode};
     
     ${web.login.upstream.disable} location = ${web.login.upstream.url}/
     ${web.login.upstream.disable} {   
