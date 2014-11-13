@@ -118,8 +118,6 @@ http
     # Custom error pages for upstream connection errors
     ${web.:error_pages}
 
-    ${ssl.clientcertca.enabled}ssl_client_certificate  ${ssl.clientcertca.default};
-
     # turn on tcp keepalive
     tcp_keepalive on;
     

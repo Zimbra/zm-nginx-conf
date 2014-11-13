@@ -19,6 +19,8 @@ server
     ssl_verify_client       ${ssl.clientcertmode};
     ssl_stapling            ${web.ssl.stapling};
     ssl_stapling_verify     ${web.ssl.stapling};
+    ${ssl.clientcertca.enabled}ssl_client_certificate  ${ssl.clientcertca.default};
+    ${ssl.stapling.responder.enabled}ssl_stapling_responder  ${ssl.stapling.responder.url};
     include                 ${core.includes.webmode}/${core.cprefix}.web.https.mode-${web.mailmode};
     
     ${web.login.upstream.disable} location = ${web.login.upstream.url}/
