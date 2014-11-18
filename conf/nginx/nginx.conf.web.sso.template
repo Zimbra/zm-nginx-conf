@@ -3,9 +3,9 @@
 #client cert auth
 server {
     server_name             ${vhn}; 
-    ${core.ipboth.enabled}listen                  ${vip}:${web.sso.certauth.port}${web.ssl.spdy};
-    ${core.ipv4only.enabled}listen                  ${vip}:${web.sso.certauth.port}${web.ssl.spdy};
-    ${core.ipv6only.enabled}listen                  ${vip}:${web.sso.certauth.port} ipv6only=on${web.ssl.spdy};
+    ${core.ipboth.enabled}listen                  ${vip}:${web.sso.certauth.port};
+    ${core.ipv4only.enabled}listen                  ${vip}:${web.sso.certauth.port};
+    ${core.ipv6only.enabled}listen                  ${vip}:${web.sso.certauth.port} ipv6only=on;
     
     ssl                     on;
     ssl_protocols           ${web.ssl.protocols};
@@ -16,10 +16,6 @@ server {
     ssl_certificate_key     ${ssl.key};
     ssl_verify_client       ${ssl.clientcertmode};
     ssl_verify_depth        ${ssl.clientcertdepth.default};
-    ssl_stapling            ${web.ssl.stapling};
-    ssl_stapling_verify     ${web.ssl.stapling};
-    ${ssl.clientcertca.enabled}ssl_client_certificate  ${ssl.clientcertca.default};
-    ${ssl.stapling.responder.enabled}ssl_stapling_responder  ${ssl.stapling.responder.url};
     
     error_page 495 496 497 =403 /50x.html;
 
