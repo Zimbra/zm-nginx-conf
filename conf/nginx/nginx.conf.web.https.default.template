@@ -2,27 +2,26 @@
 #
 server
 {
-    ${core.ipboth.enabled}listen                  [::]:${web.https.port} default${web.ssl.spdy};
-    ${core.ipv4only.enabled}listen                ${web.https.port} default${web.ssl.spdy};
-    ${core.ipv6only.enabled}listen                [::]:${web.https.port} default ipv6only=on${web.ssl.spdy};
+    ${core.ipboth.enabled}listen                  [::]:${web.https.port} default;
+    ${core.ipv4only.enabled}listen                ${web.https.port} default;
+    ${core.ipv6only.enabled}listen                [::]:${web.https.port} default ipv6only=on;
     server_name             ${web.server_name.default}.default;
     client_max_body_size    0;
     ssl                     on;
     ssl_protocols           ${web.ssl.protocols};
     ssl_prefer_server_ciphers ${web.ssl.preferserverciphers};
-    ssl_session_cache       ${ssl.session.cachesize};
-    ssl_session_timeout     ${ssl.session.timeout};
     ssl_ciphers             ${web.ssl.ciphers};
     ssl_ecdh_curve          ${web.ssl.ecdh.curve};
     ssl_certificate         ${ssl.crt.default};
     ssl_certificate_key     ${ssl.key.default};
     ssl_verify_client       ${ssl.clientcertmode.default};
     ssl_verify_depth        ${ssl.clientcertdepth.default};
-    ssl_stapling            ${web.ssl.stapling};
-    ssl_stapling_verify     ${web.ssl.stapling};
-    ${ssl.clientcertca.enabled}ssl_client_certificate  ${ssl.clientcertca.default};
-    ${ssl.stapling.responder.enabled}ssl_stapling_responder  ${ssl.stapling.responder.url};
-    include                 ${core.includes.webmode}/${core.cprefix}.web.https.mode-${web.mailmode};
+    include                 ${core.includes}/${core.cprefix}.web.https.mode-${web.mailmode};
+    
+    set $login_upstream     ${web.upstream.login.target};
+    if ($http_cookie ~ "ZM_AUTH_TOKEN=") {
+        set $login_upstream    ${web.upstream.webclient.target};
+    }
     
     ${web.login.upstream.disable} location = ${web.login.upstream.url}/
     ${web.login.upstream.disable} {   
@@ -459,4 +458,8 @@ server
         internal;
     }
 
+    #chunkin handler
+    location @chunkin_handler {
+        chunkin_resume;
+    }
 }
