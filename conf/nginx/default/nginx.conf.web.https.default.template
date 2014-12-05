@@ -23,6 +23,7 @@ server
     ${ssl.clientcertca.enabled}ssl_client_certificate  ${ssl.clientcertca.default};
     ${ssl.stapling.responder.enabled}ssl_stapling_responder  ${ssl.stapling.responder.url};
     include                 ${core.includes.webmode}/${core.cprefix}.web.https.mode-${web.mailmode};
+    limit_req               zone=one;
     
     ${web.login.upstream.disable} location = ${web.login.upstream.url}/
     ${web.login.upstream.disable} {   

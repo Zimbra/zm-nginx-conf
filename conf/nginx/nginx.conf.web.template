@@ -126,6 +126,9 @@ http
         "~ZM_AUTH_TOKEN" ${web.upstream.webclient.target};
     }
 
+    # Rate-limiting using ngx_http_limit_req_module
+    limit_req_zone $binary_remote_addr zone=one:${web.upstream.zone.size} rate={web.upstream.zone.rate}r/s;
+    
     ${web.http.enabled}include ${core.includes.vhost}/${core.cprefix}.web.http;
     ${web.http.enabled}include ${core.includes.default}/${core.cprefix}.web.http.default;
     ${web.https.enabled}include ${core.includes.vhost}/${core.cprefix}.web.https;
