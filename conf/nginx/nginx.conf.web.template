@@ -127,7 +127,7 @@ http
     }
 
     # Rate-limiting using ngx_http_limit_req_module
-    limit_req_zone $binary_remote_addr zone=one:${web.upstream.zone.size} rate={web.upstream.zone.rate}r/s;
+    limit_req_zone $binary_remote_addr zone=one:${web.upstream.zone.size} rate=${web.upstream.zone.rate}r/s;
     # List of IPs to be denied access
     ${web.upstream.restricted.:ips}
     
