@@ -3,7 +3,7 @@ server {
     ${core.ipboth.enabled}listen                  [::]:${web.sso.certauth.port} default${web.ssl.spdy};
     ${core.ipv4only.enabled}listen                ${web.sso.certauth.port} default${web.ssl.spdy};
     ${core.ipv6only.enabled}listen                [::]:${web.sso.certauth.port} default ipv6only=on${web.ssl.spdy};
-
+    
     ssl                     on;
     ssl_protocols           ${web.ssl.protocols};
     ssl_prefer_server_ciphers ${web.ssl.preferserverciphers};
@@ -22,6 +22,10 @@ server {
     limit_req               zone=one;
     
     error_page 495 496 497 =403 /50x.html;
+    
+    ${web.blocked.user.agents.enabled}if ($http_user_agent ~* (${web.upstream.blocked.user.agents})) {
+    ${web.blocked.user.agents.enabled}    return 403;
+    ${web.blocked.user.agents.enabled}}
 
 ${web.sso.certauth.default.enabled}    location = /certauth {
 ${web.sso.certauth.default.enabled}        zm_sso certauth;

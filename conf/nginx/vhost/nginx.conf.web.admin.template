@@ -24,6 +24,10 @@ server
     ${ssl.stapling.responder.enabled}ssl_stapling_responder  ${ssl.stapling.responder.url};
     limit_req               zone=one;
     
+    ${web.blocked.user.agents.enabled}if ($http_user_agent ~* (${web.upstream.blocked.user.agents})) {
+    ${web.blocked.user.agents.enabled}    return 403;
+    ${web.blocked.user.agents.enabled}}
+    
     location /
     {
         # Proxy to Zimbra adminclient Upstream
