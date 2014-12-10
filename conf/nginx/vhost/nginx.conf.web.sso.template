@@ -22,7 +22,7 @@ server {
     ssl_stapling_verify     ${web.ssl.stapling};
     ${ssl.clientcertca.enabled}ssl_client_certificate  ${ssl.clientcertca.default};
     ${ssl.stapling.responder.enabled}ssl_stapling_responder  ${ssl.stapling.responder.url};
-    limit_req               zone=one;
+    limit_req               zone=one burst=10;
     
     error_page 495 496 497 =403 /50x.html;
 

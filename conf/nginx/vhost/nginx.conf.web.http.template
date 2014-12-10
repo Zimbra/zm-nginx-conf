@@ -8,7 +8,7 @@ server
     ${core.ipv4only.enabled}listen            ${vip}:${web.http.port};
     ${core.ipv6only.enabled}listen            ${vip}:${web.http.port} ipv6only=on;
     client_max_body_size 0;
-    limit_req                               zone=one;
+    limit_req                               zone=one burst=10;
     include                                 ${core.includes.webmode}/${core.cprefix}.web.http.mode-${web.mailmode};
     
     ${web.blocked.user.agents.enabled}if ($http_user_agent ~* (${web.upstream.blocked.user.agents})) {
