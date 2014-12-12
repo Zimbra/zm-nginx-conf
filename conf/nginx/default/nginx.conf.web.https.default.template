@@ -25,7 +25,7 @@ server
     include                 ${core.includes.webmode}/${core.cprefix}.web.https.mode-${web.mailmode};
     limit_req               zone=one burst=10;
     
-    ${web.blocked.user.agents.enabled}if ($http_user_agent ~* (${web.upstream.blocked.user.agents})) {
+    ${web.blocked.user.agents.enabled}if ($http_user_agent ~* (${web.blocked.user.agents})) {
     ${web.blocked.user.agents.enabled}    return 403;
     ${web.blocked.user.agents.enabled}}
     

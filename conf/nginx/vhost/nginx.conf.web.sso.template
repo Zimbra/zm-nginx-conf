@@ -26,7 +26,7 @@ server {
     
     error_page 495 496 497 =403 /50x.html;
 
-    ${web.blocked.user.agents.enabled}if ($http_user_agent ~* (${web.upstream.blocked.user.agents})) {
+    ${web.blocked.user.agents.enabled}if ($http_user_agent ~* (${web.blocked.user.agents})) {
     ${web.blocked.user.agents.enabled}    return 403;
     ${web.blocked.user.agents.enabled}}
     
