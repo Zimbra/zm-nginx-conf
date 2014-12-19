@@ -24,6 +24,9 @@ server
     ${ssl.stapling.responder.enabled}ssl_stapling_responder  ${ssl.stapling.responder.url};
     limit_req               zone=one burst=10;
     
+    ${daip.enabled}allow ${daip};
+    ${daip.enabled}deny all;
+    
     ${web.blocked.user.agents.enabled}if ($http_user_agent ~* (${web.blocked.user.agents})) {
     ${web.blocked.user.agents.enabled}    return 403;
     ${web.blocked.user.agents.enabled}}
