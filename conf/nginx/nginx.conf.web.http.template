@@ -319,6 +319,11 @@ server
         deny all;
     }
     
+    ${web.zss.upstream.disable}location ^~ /zss
+    ${web.zss.upstream.disable}{  
+    ${web.zss.upstream.disable}    proxy_pass      https://${web.zss.upstream.hostname}$request_uri;
+    ${web.zss.upstream.disable}}
+    
     ${web.ews.upstream.disable} location ~* ^/ews/Exchange.asmx
     ${web.ews.upstream.disable} {
     ${web.ews.upstream.disable}     # Proxy to Zimbra Upstream
