@@ -25,9 +25,6 @@ server {
     limit_req               zone=one burst=10;
     
     error_page 495 496 497 =403 /50x.html;
-
-    ${daip.enabled}allow ${daip};
-    ${daip.enabled}deny all;
     
     ${web.blocked.user.agents.enabled}if ($http_user_agent ~* (${web.blocked.user.agents})) {
     ${web.blocked.user.agents.enabled}    return 403;
