@@ -478,10 +478,5 @@ server
         # for custom error pages, internal use only
         internal;
     }
-
-    #chunkin handler
-    location @chunkin_handler {
-        chunkin_resume;
-    }
 }
 
