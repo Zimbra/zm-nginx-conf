@@ -1,13 +1,11 @@
-!{explode domain(vhn)}
-# HTTPS Proxy Configuration
+# HTTPS Proxy Default Configuration
 #
 server
 {
-    server_name             ${vhn}; 
-    ${core.ipboth.enabled}listen                  ${vip}:${web.https.port};
-    ${core.ipv4only.enabled}listen                  ${vip}:${web.https.port};
-    ${core.ipv6only.enabled}listen                  ${vip}:${web.https.port} ipv6only=on;
-    
+    ${core.ipboth.enabled}listen                  [::]:${web.https.port} default${web.ssl.spdy};
+    ${core.ipv4only.enabled}listen                ${web.https.port} default${web.ssl.spdy};
+    ${core.ipv6only.enabled}listen                [::]:${web.https.port} default ipv6only=on${web.ssl.spdy};
+    server_name             ${web.server_name.default}.default;
     client_max_body_size    0;
     ssl                     on;
     ssl_protocols           ${web.ssl.protocols};
@@ -16,15 +14,20 @@ server
     ssl_session_timeout     ${ssl.session.timeout};
     ssl_ciphers             ${web.ssl.ciphers};
     ssl_ecdh_curve          ${web.ssl.ecdh.curve};
-    ssl_certificate         ${ssl.crt};
-    ssl_certificate_key     ${ssl.key};
-    ssl_verify_client       ${ssl.clientcertmode};
-    include                 ${core.includes}/${core.cprefix}.web.https.mode-${web.mailmode};
+    ssl_certificate         ${ssl.crt.default};
+    ssl_certificate_key     ${ssl.key.default};
+    ssl_verify_client       ${ssl.clientcertmode.default};
+    ssl_verify_depth        ${ssl.clientcertdepth.default};
+    ssl_stapling            ${web.ssl.stapling};
+    ssl_stapling_verify     ${web.ssl.stapling};
+    ${ssl.clientcertca.enabled}ssl_client_certificate  ${ssl.clientcertca.default};
+    ${ssl.stapling.responder.enabled}ssl_stapling_responder  ${ssl.stapling.responder.url};
+    include                 ${core.includes.webmode}/${core.cprefix}.web.https.mode-${web.mailmode};
+    limit_req               zone=one burst=10;
     
-    set $login_upstream     ${web.upstream.login.target};
-    if ($http_cookie ~ "ZM_AUTH_TOKEN=") {
-        set $login_upstream    ${web.upstream.webclient.target};
-    }
+    ${web.blocked.user.agents.enabled}if ($http_user_agent ~* (${web.blocked.user.agents})) {
+    ${web.blocked.user.agents.enabled}    return 403;
+    ${web.blocked.user.agents.enabled}}
     
     ${web.login.upstream.disable} location = ${web.login.upstream.url}/
     ${web.login.upstream.disable} {   
@@ -44,7 +47,7 @@ server
     ${web.login.upstream.disable}     # For Virtual Hosting
     ${web.login.upstream.disable}     set $virtual_host $http_host;
     ${web.login.upstream.disable}     if ($virtual_host = '') {
-    ${web.login.upstream.disable}        set $virtual_host $server_name:$server_port;
+    ${web.login.upstream.disable}        set $virtual_host $server_addr:$server_port;
     ${web.login.upstream.disable}     }
     ${web.login.upstream.disable}     proxy_set_header Host            $virtual_host;
     ${web.login.upstream.disable}
@@ -77,7 +80,7 @@ server
     ${web.login.upstream.disable}     # For Virtual Hosting
     ${web.login.upstream.disable}     set $virtual_host $http_host;
     ${web.login.upstream.disable}     if ($virtual_host = '') {
-    ${web.login.upstream.disable}        set $virtual_host $server_name:$server_port;
+    ${web.login.upstream.disable}        set $virtual_host $server_addr:$server_port;
     ${web.login.upstream.disable}     }
     ${web.login.upstream.disable}     proxy_set_header Host            $virtual_host;
     ${web.login.upstream.disable}
@@ -129,7 +132,7 @@ server
         # For Virtual Hosting
         set $virtual_host $http_host;
         if ($virtual_host = '') {
-            set $virtual_host $server_name:$server_port;
+            set $virtual_host $server_addr:$server_port;
         }
         proxy_set_header Host            $virtual_host;
 
@@ -184,7 +187,7 @@ server
         # For Virtual Hosting
         set $virtual_host $http_host;
         if ($virtual_host = '') {
-            set $virtual_host $server_name:$server_port;
+            set $virtual_host $server_addr:$server_port;
         }
         proxy_set_header Host            $virtual_host;
 
@@ -239,7 +242,7 @@ server
         # For Virtual Hosting
         set $virtual_host $http_host;
         if ($virtual_host = '') {
-            set $virtual_host $server_name:$server_port;
+            set $virtual_host $server_addr:$server_port;
         }
         proxy_set_header Host            $virtual_host;
 
@@ -294,7 +297,7 @@ server
         # For Virtual Hosting
         set $virtual_host $http_host;
         if ($virtual_host = '') {
-            set $virtual_host $server_name:$server_port;
+            set $virtual_host $server_addr:$server_port;
         }
         proxy_set_header Host            $virtual_host;
 
@@ -351,7 +354,7 @@ server
         # For Virtual Hosting
         set $virtual_host $http_host;
         if ($virtual_host = '') {
-            set $virtual_host $server_name:$server_port;
+            set $virtual_host $server_addr:$server_port;
         }
         proxy_set_header Host            $virtual_host;
 
@@ -409,7 +412,7 @@ server
     ${web.ews.upstream.disable}     # For Virtual Hosting
     ${web.ews.upstream.disable}     set $virtual_host $http_host;
     ${web.ews.upstream.disable}     if ($virtual_host = '') {
-    ${web.ews.upstream.disable}        set $virtual_host $server_name:$server_port;
+    ${web.ews.upstream.disable}        set $virtual_host $server_addr:$server_port;
     ${web.ews.upstream.disable}     }
     ${web.ews.upstream.disable}     proxy_set_header Host            $virtual_host;
     ${web.ews.upstream.disable}
@@ -461,7 +464,7 @@ server
         # For Virtual Hosting
         set $virtual_host $http_host;
         if ($virtual_host = '') {
-            set $virtual_host $server_name:$server_port;
+            set $virtual_host $server_addr:$server_port;
         }
         proxy_set_header Host            $virtual_host;
 
@@ -476,9 +479,14 @@ server
         proxy_redirect http://$relhost/ https://$http_host/;
     }
     
+    # Turn down requests to non-existing services
+    location ~* /(${web.upstream.blocked.urls})/ {
+        return 404;
+    }
+    
     location ~* ^/zmerror_.*\.html$ {
         # for custom error pages, internal use only
         internal;
     }
-}
 
+}
