@@ -2,10 +2,8 @@
 #
 server
 {
-    ${core.ipboth.enabled}listen    [::]:${web.http.port} default;
-    ${core.ipv4only.enabled}listen    ${web.http.port} default;
-    ${core.ipv6only.enabled}listen    [::]:${web.http.port} default ipv6only=on;
     server_name             ${web.server_name.default}.default;
+    ${web.listen.http.default}
     client_max_body_size 0;
     limit_req               zone=one burst=10;
     include                 ${core.includes.webmode}/${core.cprefix}.web.http.mode-${web.mailmode};

@@ -2,10 +2,8 @@
 #
 server
 {
-    ${core.ipboth.enabled}listen                  [::]:${web.https.port} default${web.ssl.spdy};
-    ${core.ipv4only.enabled}listen                ${web.https.port} default${web.ssl.spdy};
-    ${core.ipv6only.enabled}listen                [::]:${web.https.port} default ipv6only=on${web.ssl.spdy};
     server_name             ${web.server_name.default}.default;
+    ${web.listen.https.default}
     client_max_body_size    0;
     ssl                     on;
     ssl_protocols           ${web.ssl.protocols};
