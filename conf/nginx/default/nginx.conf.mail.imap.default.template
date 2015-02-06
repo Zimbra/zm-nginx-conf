@@ -2,7 +2,7 @@
 # 
 server
 {
-    ${mail.listen.imap.default};
+    ${mail.listen.imap.default}
     protocol                imap;
     proxy                   on;
     timeout                 ${mail.imap.timeout};
