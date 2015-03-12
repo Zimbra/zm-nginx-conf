@@ -2,9 +2,6 @@ http
 {
     # disable nginx version on error pages
     server_tokens off;
-    map $host $time_resolution {
-      default s;
-    }
     
     # You need to customize these two values by setting local config
     # proxy_server_names_hash_max_size and proxy_names_hash_bucket_size
@@ -106,10 +103,10 @@ http
     ${web.login.upstream.disable}    ${web.ssl.upstream.loginserver.:servers}
     ${web.login.upstream.disable}    zmauth;
     ${web.login.upstream.disable} }
- 
+    
     # Enable Access logs for web traffic
     log_format upstream '$remote_addr:$remote_port - $remote_user [$time_local]  '
-      '"$request" $status $bytes_sent $upstream_response_time$time_resolution $upstream_cache_status '
+      '"$request" $status $bytes_sent '
       '"$http_referer" "$http_user_agent" "$upstream_addr"';
     access_log ${web.logfile} upstream;
 
@@ -121,25 +118,17 @@ http
     # Custom error pages for upstream connection errors
     ${web.:error_pages}
 
+    ${ssl.clientcertca.enabled}ssl_client_certificate  ${ssl.clientcertca.default};
+
     # turn on tcp keepalive
     tcp_keepalive on;
-    
-    map $http_cookie $login_upstream {
-        default ${web.upstream.login.target};
-        "~ZM_AUTH_TOKEN" ${web.upstream.webclient.target};
-    }
 
-    # Rate-limiting using ngx_http_limit_req_module
-    limit_req_zone $binary_remote_addr zone=one:${web.upstream.zone.size} rate=${web.upstream.zone.rate}r/s;
-    # List of IPs to be denied access
-    ${web.upstream.restricted.:ips}
-    
-    ${web.http.enabled}include ${core.includes.vhost}/${core.cprefix}.web.http;
-    ${web.http.enabled}include ${core.includes.default}/${core.cprefix}.web.http.default;
-    ${web.https.enabled}include ${core.includes.vhost}/${core.cprefix}.web.https;
-    ${web.https.enabled}include ${core.includes.default}/${core.cprefix}.web.https.default;
-    ${web.sso.default.enabled}include ${core.includes.vhost}/${core.cprefix}.web.sso;
-    ${web.sso.default.enabled}include ${core.includes.default}/${core.cprefix}.web.sso.default;
-    ${web.admin.default.enabled}include ${core.includes.vhost}/${core.cprefix}.web.admin;
-    ${web.admin.default.enabled}include ${core.includes.default}/${core.cprefix}.web.admin.default;
+    ${web.http.enabled}include ${core.includes}/${core.cprefix}.web.http;
+    ${web.http.enabled}include ${core.includes}/${core.cprefix}.web.http.default;
+    ${web.https.enabled}include ${core.includes}/${core.cprefix}.web.https;
+    ${web.https.enabled}include ${core.includes}/${core.cprefix}.web.https.default;
+    ${web.sso.default.enabled}include ${core.includes}/${core.cprefix}.web.sso;
+    ${web.sso.default.enabled}include ${core.includes}/${core.cprefix}.web.sso.default;
+    ${web.admin.default.enabled}include ${core.includes}/${core.cprefix}.web.admin;
+    ${web.admin.default.enabled}include ${core.includes}/${core.cprefix}.web.admin.default;
 }
