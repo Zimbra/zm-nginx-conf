@@ -2,7 +2,9 @@
 # 
 server
 {
-    ${mail.listen.imap.default}
+    ${core.ipboth.enabled}listen                  [::]:${mail.imap.port};
+    ${core.ipv4only.enabled}listen                ${mail.imap.port};
+    ${core.ipv6only.enabled}listen                [::]:${mail.imap.port} ipv6only=on;
     protocol                imap;
     proxy                   on;
     timeout                 ${mail.imap.timeout};
