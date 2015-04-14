@@ -318,7 +318,24 @@ server
         allow ::1;
         deny all;
     }
-    
+
+    ${web.xmpp.bosh.upstream.disable} location ^~ ${web.xmpp.local.bind.url}
+    ${web.xmpp.bosh.upstream.disable} {
+    ${web.xmpp.bosh.upstream.disable}     # Proxy to external XMPP server
+    ${web.xmpp.bosh.upstream.disable}     proxy_pass          http://${web.xmpp.bosh.hostname}:${web.xmpp.bosh.port}${web.xmpp.remote.bind.url};
+    ${web.xmpp.bosh.upstream.disable}     proxy_buffering     off;
+    ${web.xmpp.bosh.upstream.disable}
+    ${web.xmpp.bosh.upstream.disable}     # For audit
+    ${web.xmpp.bosh.upstream.disable}     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    ${web.xmpp.bosh.upstream.disable}
+    ${web.xmpp.bosh.upstream.disable}     # For Virtual Hosting
+    ${web.xmpp.bosh.upstream.disable}     set $virtual_host $http_host;
+    ${web.xmpp.bosh.upstream.disable}     if ($virtual_host = '') {
+    ${web.xmpp.bosh.upstream.disable}         set $virtual_host $server_addr:$server_port;
+    ${web.xmpp.bosh.upstream.disable}     }
+    ${web.xmpp.bosh.upstream.disable}     proxy_set_header Host            $virtual_host;
+    ${web.xmpp.bosh.upstream.disable} }
+
     ${web.ews.upstream.disable} location ~* ^/ews/Exchange.asmx
     ${web.ews.upstream.disable} {
     ${web.ews.upstream.disable}     # Proxy to Zimbra Upstream
