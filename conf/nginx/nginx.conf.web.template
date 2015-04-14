@@ -134,6 +134,13 @@ http
     # List of IPs to be denied access
     ${web.upstream.restricted.:ips}
     
+    # Pagespeed config
+    pagespeed on;
+    pagespeed FileCachePath "/var/cache/ngx_pagespeed/";
+    pagespeed EnableFilters combine_css,combine_javascript;
+    pagespeed AdminPath /pagespeed_admin;
+    pagespeed GlobalAdminPath /pagespeed_global_admin;
+    
     ${web.http.enabled}include ${core.includes.vhost}/${core.cprefix}.web.http;
     ${web.http.enabled}include ${core.includes.default}/${core.cprefix}.web.http.default;
     ${web.https.enabled}include ${core.includes.vhost}/${core.cprefix}.web.https;
