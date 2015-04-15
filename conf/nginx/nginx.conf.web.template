@@ -141,7 +141,7 @@ http
     pagespeed AdminPath /pagespeed_admin;
     pagespeed GlobalAdminPath /pagespeed_global_admin;
     pagespeed RespectVary ${web.pagespeed.respect.vary};
-    ${web.pagespeed.disallowed.urls};
+    ${web.pagespeed.disallowed.urls}
  
     ${web.http.enabled}include ${core.includes.vhost}/${core.cprefix}.web.http;
     ${web.http.enabled}include ${core.includes.default}/${core.cprefix}.web.http.default;
