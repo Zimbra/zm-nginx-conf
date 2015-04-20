@@ -142,7 +142,13 @@ http
     pagespeed GlobalAdminPath /pagespeed_global_admin;
     pagespeed RespectVary ${web.pagespeed.respect.vary};
     ${web.pagespeed.disallowed.urls}
- 
+
+    gzip on;
+    gzip_proxied any;
+    gzip_types text/plain text/xml text/css image/png image/gif image/jpeg image/jpg application/json text/javascript application/x-javascript;
+    gzip_vary on;
+    gzip_disable "MSIE [1-6]\.(?!.*SV1)";
+
     ${web.http.enabled}include ${core.includes.vhost}/${core.cprefix}.web.http;
     ${web.http.enabled}include ${core.includes.default}/${core.cprefix}.web.http.default;
     ${web.https.enabled}include ${core.includes.vhost}/${core.cprefix}.web.https;
