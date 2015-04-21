@@ -19,10 +19,11 @@ server {
     ssl_stapling_verify     ${web.ssl.stapling};
     ${ssl.clientcertca.enabled}ssl_client_certificate  ${ssl.clientcertca.default};
     ${ssl.stapling.responder.enabled}ssl_stapling_responder  ${ssl.stapling.responder.url};
+    ${web.ssl.dhparam.enabled}ssl_dhparam             ${web.ssl.dhparam.file};
     limit_req               zone=one burst=10;
-    
+
     error_page 495 496 497 =403 /50x.html;
-    
+
     ${web.blocked.user.agents.enabled}if ($http_user_agent ~* (${web.blocked.user.agents})) {
     ${web.blocked.user.agents.enabled}    return 403;
     ${web.blocked.user.agents.enabled}}
