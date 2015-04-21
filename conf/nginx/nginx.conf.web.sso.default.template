@@ -15,6 +15,7 @@ server {
     ssl_certificate_key     ${ssl.key.default};
     ssl_verify_client       ${ssl.clientcertmode.default};
     ssl_verify_depth        ${ssl.clientcertdepth.default};
+    ${web.ssl.dhparam.enabled}ssl_dhparam             ${web.ssl.dhparam.file};
 
     error_page 495 496 497 =403 /50x.html;
 

@@ -15,6 +15,7 @@ server
     ssl_ecdh_curve          ${web.ssl.ecdh.curve};
     ssl_certificate         ${ssl.crt.default};
     ssl_certificate_key     ${ssl.key.default};
+    ${web.ssl.dhparam.enabled}ssl_dhparam             ${web.ssl.dhparam.file};
 
     location /
     {

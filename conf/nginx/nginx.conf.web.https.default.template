@@ -18,8 +18,9 @@ server
     ssl_certificate_key     ${ssl.key.default};
     ssl_verify_client       ${ssl.clientcertmode.default};
     ssl_verify_depth        ${ssl.clientcertdepth.default};
+    ${web.ssl.dhparam.enabled}ssl_dhparam             ${web.ssl.dhparam.file};
     include                 ${core.includes}/${core.cprefix}.web.https.mode-${web.mailmode};
-    
+
     set $login_upstream     ${web.upstream.login.target};
     if ($http_cookie ~ "ZM_AUTH_TOKEN=") {
         set $login_upstream    ${web.upstream.webclient.target};
