@@ -3,7 +3,7 @@ server {
     ${core.ipboth.enabled}listen                  [::]:${web.sso.certauth.port} default;
     ${core.ipv4only.enabled}listen                ${web.sso.certauth.port} default;
     ${core.ipv6only.enabled}listen                [::]:${web.sso.certauth.port} default ipv6only=on;
-
+    ${web.add.headers.default}
     ssl                     on;
     ssl_protocols           ${web.ssl.protocols};
     ssl_prefer_server_ciphers ${web.ssl.preferserverciphers};
