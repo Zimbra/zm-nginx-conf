@@ -2,9 +2,9 @@
 #
 server
 {
-    ${core.ipboth.enabled}listen                  [::]:${web.https.port} default;
+    ${core.ipboth.enabled}listen                  [::]:${web.https.port} default ipv6only=off;
     ${core.ipv4only.enabled}listen                ${web.https.port} default;
-    ${core.ipv6only.enabled}listen                [::]:${web.https.port} default ipv6only=on;
+    ${core.ipv6only.enabled}listen                [::]:${web.https.port} default;
     ${web.add.headers.default}
     server_name             ${web.server_name.default}.default;
     client_max_body_size    0;

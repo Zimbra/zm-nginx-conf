@@ -1,10 +1,10 @@
 # HTTPS Proxy Default Configuration
-# 
+#
 server
 {
-    ${core.ipboth.enabled}listen                  [::]:${web.admin.port} default;
+    ${core.ipboth.enabled}listen                  [::]:${web.admin.port} default ipv6only=off;
     ${core.ipv4only.enabled}listen                ${web.admin.port} default;
-    ${core.ipv6only.enabled}listen                [::]:${web.admin.port} default ipv6only=on;
+    ${core.ipv6only.enabled}listen                [::]:${web.admin.port} default;
     ${web.add.headers.default}
     client_max_body_size    0;
     ssl                     on;

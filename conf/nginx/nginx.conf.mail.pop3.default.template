@@ -1,10 +1,10 @@
 # POP3 proxy default configuration
-# 
+#
 server
 {
-    ${core.ipboth.enabled}listen                  [::]:${mail.pop3.port};
+    ${core.ipboth.enabled}listen                  [::]:${mail.pop3.port} ipv6only=off;
     ${core.ipv4only.enabled}listen                ${mail.pop3.port};
-    ${core.ipv6only.enabled}listen                [::]:${mail.pop3.port} ipv6only=on;
+    ${core.ipv6only.enabled}listen                [::]:${mail.pop3.port};
     protocol                pop3;
     proxy                   on;
     timeout                 ${mail.pop3.timeout};

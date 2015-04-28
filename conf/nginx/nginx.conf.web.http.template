@@ -3,18 +3,18 @@
 #
 server
 {
-    server_name         ${vhn}; 
-    ${core.ipboth.enabled}listen            ${vip}:${web.http.port};
+    server_name         ${vhn};
+    ${core.ipboth.enabled}listen            ${vip}:${web.http.port} ipv6only=off;
     ${core.ipv4only.enabled}listen            ${vip}:${web.http.port};
-    ${core.ipv6only.enabled}listen            ${vip}:${web.http.port} ipv6only=on;
+    ${core.ipv6only.enabled}listen            ${vip}:${web.http.port};
     client_max_body_size 0;
     include                 ${core.includes}/${core.cprefix}.web.http.mode-${web.mailmode};
-    
+
     set $login_upstream     ${web.upstream.login.target};
     if ($http_cookie ~ "ZM_AUTH_TOKEN=") {
         set $login_upstream    ${web.upstream.webclient.target};
     }
-    
+
     ${web.login.upstream.disable} location = ${web.login.upstream.url}/
     ${web.login.upstream.disable} {   
     ${web.login.upstream.disable}     set $mailhostport ${web.http.uport};   # replace this with *the* mailhost port

@@ -1,10 +1,10 @@
 # IMAPS proxy default configuration
-# 
+#
 server
 {
-    ${core.ipboth.enabled}listen                  [::]:${mail.imaps.port};
+    ${core.ipboth.enabled}listen                  [::]:${mail.imaps.port} ipv6only=off;
     ${core.ipv4only.enabled}listen                ${mail.imaps.port};
-    ${core.ipv6only.enabled}listen                [::]:${mail.imaps.port} ipv6only=on;
+    ${core.ipv6only.enabled}listen                [::]:${mail.imaps.port};
     protocol            imap;
     proxy               on;
     timeout             ${mail.imap.timeout};

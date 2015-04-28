@@ -1,8 +1,8 @@
 #client cert auth
 server {
-    ${core.ipboth.enabled}listen                  [::]:${web.sso.certauth.port} default;
+    ${core.ipboth.enabled}listen                  [::]:${web.sso.certauth.port} default ipv6only=off;
     ${core.ipv4only.enabled}listen                ${web.sso.certauth.port} default;
-    ${core.ipv6only.enabled}listen                [::]:${web.sso.certauth.port} default ipv6only=on;
+    ${core.ipv6only.enabled}listen                [::]:${web.sso.certauth.port} default;
     ${web.add.headers.default}
     ssl                     on;
     ssl_protocols           ${web.ssl.protocols};

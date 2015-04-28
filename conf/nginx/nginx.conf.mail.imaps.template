@@ -1,12 +1,12 @@
 !{explode domain(vhn)}
 # IMAPS proxy configuration
-# 
+#
 server
 {
-    server_name         ${vhn}; 
-    ${core.ipboth.enabled}listen              ${vip}:${mail.imaps.port};
+    server_name         ${vhn};
+    ${core.ipboth.enabled}listen              ${vip}:${mail.imaps.port} ipv6only=off;
     ${core.ipv4only.enabled}listen            ${vip}:${mail.imaps.port};
-    ${core.ipv6only.enabled}listen            ${vip}:${mail.imaps.port} ipv6only=on;
+    ${core.ipv6only.enabled}listen            ${vip}:${mail.imaps.port};
     protocol            imap;
     proxy               on;
     timeout             ${mail.imap.timeout};
