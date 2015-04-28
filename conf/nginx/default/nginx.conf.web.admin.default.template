@@ -1,13 +1,9 @@
-!{explode domain(vhn)}
-# HTTPS Proxy Configuration
-# 
+# HTTPS Proxy Default Configuration
+#
 server
 {
-    server_name             ${vhn}; 
-    ${core.ipboth.enabled}listen                    ${vip}:${web.admin.port};
-    ${core.ipv4only.enabled}listen                  ${vip}:${web.admin.port};
-    ${core.ipv6only.enabled}listen                  ${vip}:${web.admin.port} ipv6only=on;
-    ${web.add.headers.vhost}
+    ${web.listen.admin.default}
+    ${web.add.headers.default}
     client_max_body_size    0;
     ssl                     on;
     ssl_protocols           ${web.ssl.protocols};
@@ -16,9 +12,18 @@ server
     ssl_session_timeout     ${ssl.session.timeout};
     ssl_ciphers             ${web.ssl.ciphers};
     ssl_ecdh_curve          ${web.ssl.ecdh.curve};
-    ssl_certificate         ${ssl.crt};
-    ssl_certificate_key     ${ssl.key};
+    ssl_certificate         ${ssl.crt.default};
+    ssl_certificate_key     ${ssl.key.default};
+    ssl_stapling            ${web.ssl.stapling};
+    ssl_stapling_verify     ${web.ssl.stapling};
+    ${ssl.clientcertca.enabled}ssl_client_certificate  ${ssl.clientcertca.default};
+    ${ssl.stapling.responder.enabled}ssl_stapling_responder  ${ssl.stapling.responder.url};
     ${web.ssl.dhparam.enabled}ssl_dhparam             ${web.ssl.dhparam.file};
+    limit_req               zone=one burst=10;
+
+    ${web.blocked.user.agents.enabled}if ($http_user_agent ~* (${web.blocked.user.agents})) {
+    ${web.blocked.user.agents.enabled}    return 403;
+    ${web.blocked.user.agents.enabled}}
 
     location /
     {
@@ -64,4 +69,3 @@ server
         proxy_redirect https://$relhost:${web.admin.uport}/ https://$relhost:${web.admin.port}/;
     }   
 }
-
