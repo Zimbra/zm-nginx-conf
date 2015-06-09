@@ -1,24 +1,21 @@
 !{explode domain(vhn)}
 # HTTPS Proxy Configuration
-#
+# 
 server
 {
-    server_name             ${vhn};
-    ${core.ipboth.enabled}listen                    ${vip}:${web.admin.port} ipv6only=off;
+    server_name             ${vhn}; 
+    ${core.ipboth.enabled}listen                    ${vip}:${web.admin.port};
     ${core.ipv4only.enabled}listen                  ${vip}:${web.admin.port};
-    ${core.ipv6only.enabled}listen                  ${vip}:${web.admin.port};
-    ${web.add.headers.vhost}
+    ${core.ipv6only.enabled}listen                  ${vip}:${web.admin.port} ipv6only=on;
+
     client_max_body_size    0;
     ssl                     on;
     ssl_protocols           ${web.ssl.protocols};
     ssl_prefer_server_ciphers ${web.ssl.preferserverciphers};
-    ssl_session_cache       ${ssl.session.cachesize};
-    ssl_session_timeout     ${ssl.session.timeout};
     ssl_ciphers             ${web.ssl.ciphers};
     ssl_ecdh_curve          ${web.ssl.ecdh.curve};
     ssl_certificate         ${ssl.crt};
     ssl_certificate_key     ${ssl.key};
-    ${web.ssl.dhparam.enabled}ssl_dhparam             ${web.ssl.dhparam.file};
 
     location /
     {

@@ -36,7 +36,7 @@ zm_lookup {
     # the client IP will be appended to the login name in the format:
     # <login name>@<client ip>
     #
-    zm_lookup_allow_unqualified   off;
+    zm_lookup_allow_unqualified   ${zmlookup.unqual};
 
     # URL prefix for the upstream server
     zm_prefix_url ${zmprefix.url};

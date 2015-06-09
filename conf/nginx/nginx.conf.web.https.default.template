@@ -2,26 +2,22 @@
 #
 server
 {
-    ${core.ipboth.enabled}listen                  [::]:${web.https.port} default ipv6only=off;
+    ${core.ipboth.enabled}listen                  [::]:${web.https.port} default;
     ${core.ipv4only.enabled}listen                ${web.https.port} default;
-    ${core.ipv6only.enabled}listen                [::]:${web.https.port} default;
-    ${web.add.headers.default}
+    ${core.ipv6only.enabled}listen                [::]:${web.https.port} default ipv6only=on;
     server_name             ${web.server_name.default}.default;
     client_max_body_size    0;
     ssl                     on;
     ssl_protocols           ${web.ssl.protocols};
     ssl_prefer_server_ciphers ${web.ssl.preferserverciphers};
-    ssl_session_cache       ${ssl.session.cachesize};
-    ssl_session_timeout     ${ssl.session.timeout};
     ssl_ciphers             ${web.ssl.ciphers};
     ssl_ecdh_curve          ${web.ssl.ecdh.curve};
     ssl_certificate         ${ssl.crt.default};
     ssl_certificate_key     ${ssl.key.default};
     ssl_verify_client       ${ssl.clientcertmode.default};
     ssl_verify_depth        ${ssl.clientcertdepth.default};
-    ${web.ssl.dhparam.enabled}ssl_dhparam             ${web.ssl.dhparam.file};
     include                 ${core.includes}/${core.cprefix}.web.https.mode-${web.mailmode};
-
+    
     set $login_upstream     ${web.upstream.login.target};
     if ($http_cookie ~ "ZM_AUTH_TOKEN=") {
         set $login_upstream    ${web.upstream.webclient.target};
@@ -377,43 +373,6 @@ server
         deny all;
     }
     
-    ${web.zss.upstream.disable} location ^~ /zss
-    ${web.zss.upstream.disable} {
-    ${web.zss.upstream.disable}     # Resolver directive to dynamically resolve ip addr change of AWS ELB type upstreams 
-    ${web.zss.upstream.disable}     include             ${web.zss.resolver.file};
-    ${web.zss.upstream.disable}
-    ${web.zss.upstream.disable}     # Proxy to Zimbra ZSS Upstream
-    ${web.zss.upstream.disable}     proxy_pass          https://${web.zss.upstream.hostname};
-    ${web.zss.upstream.disable}     proxy_buffering     off;
-    ${web.zss.upstream.disable}
-    ${web.zss.upstream.disable}     # For audit
-    ${web.zss.upstream.disable}     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-    ${web.zss.upstream.disable}
-    ${web.zss.upstream.disable}     # For Virtual Hosting
-    ${web.zss.upstream.disable}     set $virtual_host $http_host;
-    ${web.zss.upstream.disable}     if ($virtual_host = '') {
-    ${web.zss.upstream.disable}         set $virtual_host $server_addr:$server_port;
-    ${web.zss.upstream.disable}     }
-    ${web.zss.upstream.disable}     proxy_set_header Host            $virtual_host;
-    ${web.zss.upstream.disable} }
-
-    ${web.xmpp.bosh.upstream.disable} location ^~ ${web.xmpp.local.bind.url}
-    ${web.xmpp.bosh.upstream.disable} {
-    ${web.xmpp.bosh.upstream.disable}     # Proxy to external XMPP server
-    ${web.xmpp.bosh.upstream.disable}     proxy_pass          https://${web.xmpp.bosh.hostname}:${web.xmpp.bosh.port}${web.xmpp.remote.bind.url};
-    ${web.xmpp.bosh.upstream.disable}     proxy_buffering     off;
-    ${web.xmpp.bosh.upstream.disable}
-    ${web.xmpp.bosh.upstream.disable}     # For audit
-    ${web.xmpp.bosh.upstream.disable}     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-    ${web.xmpp.bosh.upstream.disable}
-    ${web.xmpp.bosh.upstream.disable}     # For Virtual Hosting
-    ${web.xmpp.bosh.upstream.disable}     set $virtual_host $http_host;
-    ${web.xmpp.bosh.upstream.disable}     if ($virtual_host = '') {
-    ${web.xmpp.bosh.upstream.disable}         set $virtual_host $server_addr:$server_port;
-    ${web.xmpp.bosh.upstream.disable}     }
-    ${web.xmpp.bosh.upstream.disable}     proxy_set_header Host            $virtual_host;
-    ${web.xmpp.bosh.upstream.disable} }
-
     ${web.ews.upstream.disable} location ~* ^/ews/Exchange.asmx
     ${web.ews.upstream.disable} {
     ${web.ews.upstream.disable}     # Proxy to Zimbra Upstream
@@ -497,5 +456,10 @@ server
     location ~* ^/zmerror_.*\.html$ {
         # for custom error pages, internal use only
         internal;
+    }
+
+    #chunkin handler
+    location @chunkin_handler {
+        chunkin_resume;
     }
 }
