@@ -505,12 +505,5 @@ server
         # for custom error pages, internal use only
         internal;
     }
-
-    location /ngx_pagespeed_statistics { allow 127.0.0.1; deny all; }
-    location /ngx_pagespeed_global_statistics { allow 127.0.0.1; deny all; }
-    location /ngx_pagespeed_message { allow 127.0.0.1; deny all; }
-    location /pagespeed_console { allow 127.0.0.1; deny all; }
-    location ~ ^/pagespeed_admin { allow 127.0.0.1; deny all; }
-    location ~ ^/pagespeed_global_admin { allow 127.0.0.1; deny all; }
 }
 

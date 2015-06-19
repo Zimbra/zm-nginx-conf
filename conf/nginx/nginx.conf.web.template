@@ -133,15 +133,6 @@ http
     limit_req_zone $binary_remote_addr zone=one:${web.upstream.zone.size} rate=${web.upstream.zone.rate}r/s;
     # List of IPs to be denied access
     ${web.upstream.restricted.:ips}
-   
-    # Pagespeed config
-    pagespeed ${web.pagespeed.enabled};
-    pagespeed FileCachePath "/var/cache/ngx_pagespeed/";
-    pagespeed EnableFilters combine_css,combine_javascript;
-    pagespeed AdminPath /pagespeed_admin;
-    pagespeed GlobalAdminPath /pagespeed_global_admin;
-    pagespeed RespectVary ${web.pagespeed.respect.vary};
-    ${web.pagespeed.disallowed.urls}
 
     gzip on;
     gzip_proxied any;
