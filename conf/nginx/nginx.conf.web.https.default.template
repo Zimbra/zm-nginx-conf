@@ -377,26 +377,6 @@ server
         deny all;
     }
     
-    ${web.zss.upstream.disable} location ^~ /zss
-    ${web.zss.upstream.disable} {
-    ${web.zss.upstream.disable}     # Resolver directive to dynamically resolve ip addr change of AWS ELB type upstreams 
-    ${web.zss.upstream.disable}     include             ${web.zss.resolver.file};
-    ${web.zss.upstream.disable}
-    ${web.zss.upstream.disable}     # Proxy to Zimbra ZSS Upstream
-    ${web.zss.upstream.disable}     proxy_pass          https://${web.zss.upstream.hostname};
-    ${web.zss.upstream.disable}     proxy_buffering     off;
-    ${web.zss.upstream.disable}
-    ${web.zss.upstream.disable}     # For audit
-    ${web.zss.upstream.disable}     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-    ${web.zss.upstream.disable}
-    ${web.zss.upstream.disable}     # For Virtual Hosting
-    ${web.zss.upstream.disable}     set $virtual_host $http_host;
-    ${web.zss.upstream.disable}     if ($virtual_host = '') {
-    ${web.zss.upstream.disable}         set $virtual_host $server_addr:$server_port;
-    ${web.zss.upstream.disable}     }
-    ${web.zss.upstream.disable}     proxy_set_header Host            $virtual_host;
-    ${web.zss.upstream.disable} }
-
     ${web.xmpp.bosh.upstream.disable} location ^~ ${web.xmpp.local.bind.url}
     ${web.xmpp.bosh.upstream.disable} {
     ${web.xmpp.bosh.upstream.disable}     # Proxy to external XMPP server
