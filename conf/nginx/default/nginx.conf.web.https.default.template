@@ -403,6 +403,7 @@ server
     ${web.xmpp.bosh.upstream.disable} {
     ${web.xmpp.bosh.upstream.disable}     # Proxy to external XMPP server
     ${web.xmpp.bosh.upstream.disable}     proxy_pass          http://${web.xmpp.bosh.hostname}:${web.xmpp.bosh.port}${web.xmpp.remote.bind.url};
+    ${web.xmpp.bosh.upstream.disable}     proxy_read_timeout  ${web.xmpp.bosh.timeout};
     ${web.xmpp.bosh.upstream.disable}     proxy_buffering     off;
     ${web.xmpp.bosh.upstream.disable}
     ${web.xmpp.bosh.upstream.disable}     # For audit
