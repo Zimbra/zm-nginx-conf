@@ -1,18 +1,19 @@
-!{explode domain(vhn)}
-# HTTP Proxy Configuration
+# HTTP Proxy Default Configuration
 #
 server
 {
-    server_name         ${vhn};
-    ${web.listen.http.vhost}
+    ${core.ipboth.enabled}listen    [::]:${web.http.port} default ipv6only=off;
+    ${core.ipv4only.enabled}listen    ${web.http.port} default;
+    ${core.ipv6only.enabled}listen    [::]:${web.http.port} default;
+    server_name             ${web.server_name.default}.default;
     client_max_body_size 0;
-    limit_req                               zone=one burst=10;
-    include                                 ${core.includes.webmode}/${core.cprefix}.web.http.mode-${web.mailmode};
+    include                 ${core.includes}/${core.cprefix}.web.http.mode-${web.mailmode};
 
-    ${web.blocked.user.agents.enabled}if ($http_user_agent ~* (${web.blocked.user.agents})) {
-    ${web.blocked.user.agents.enabled}    return 403;
-    ${web.blocked.user.agents.enabled}}
-    
+    set $login_upstream     ${web.upstream.login.target};
+    if ($http_cookie ~ "ZM_AUTH_TOKEN=") {
+        set $login_upstream    ${web.upstream.webclient.target};
+    }
+
     ${web.login.upstream.disable} location = ${web.login.upstream.url}/
     ${web.login.upstream.disable} {   
     ${web.login.upstream.disable}     set $mailhostport ${web.http.uport};   # replace this with *the* mailhost port
@@ -31,7 +32,7 @@ server
     ${web.login.upstream.disable}     # For Virtual Hosting
     ${web.login.upstream.disable}     set $virtual_host $http_host;
     ${web.login.upstream.disable}     if ($virtual_host = '') {
-    ${web.login.upstream.disable}        set $virtual_host $server_name:$server_port;
+    ${web.login.upstream.disable}        set $virtual_host $server_addr:$server_port;
     ${web.login.upstream.disable}     }
     ${web.login.upstream.disable}     proxy_set_header Host            $virtual_host;
     ${web.login.upstream.disable}
@@ -57,7 +58,7 @@ server
     ${web.login.upstream.disable}     # For Virtual Hosting
     ${web.login.upstream.disable}     set $virtual_host $http_host;
     ${web.login.upstream.disable}     if ($virtual_host = '') {
-    ${web.login.upstream.disable}        set $virtual_host $server_name:$server_port;
+    ${web.login.upstream.disable}        set $virtual_host $server_addr:$server_port;
     ${web.login.upstream.disable}     }
     ${web.login.upstream.disable}     proxy_set_header Host            $virtual_host;
     ${web.login.upstream.disable}
@@ -102,7 +103,7 @@ server
         # For Virtual Hosting
         set $virtual_host $http_host;
         if ($virtual_host = '') {
-            set $virtual_host $server_name:$server_port;
+            set $virtual_host $server_addr:$server_port;
         }
         proxy_set_header Host            $virtual_host;
 
@@ -151,7 +152,7 @@ server
         # For Virtual Hosting
         set $virtual_host $http_host;
         if ($virtual_host = '') {
-            set $virtual_host $server_name:$server_port;
+            set $virtual_host $server_addr:$server_port;
         }
         proxy_set_header Host            $virtual_host;
 
@@ -200,7 +201,7 @@ server
         # For Virtual Hosting
         set $virtual_host $http_host;
         if ($virtual_host = '') {
-            set $virtual_host $server_name:$server_port;
+            set $virtual_host $server_addr:$server_port;
         }
         proxy_set_header Host            $virtual_host;
 
@@ -249,7 +250,7 @@ server
         # For Virtual Hosting
         set $virtual_host $http_host;
         if ($virtual_host = '') {
-            set $virtual_host $server_name:$server_port;
+            set $virtual_host $server_addr:$server_port;
         }
         proxy_set_header Host            $virtual_host;
 
@@ -299,7 +300,7 @@ server
         # For Virtual Hosting
         set $virtual_host $http_host;
         if ($virtual_host = '') {
-            set $virtual_host $server_name:$server_port;
+            set $virtual_host $server_addr:$server_port;
         }
         proxy_set_header Host            $virtual_host;
 
@@ -348,7 +349,7 @@ server
     ${web.ews.upstream.disable}     # For Virtual Hosting
     ${web.ews.upstream.disable}     set $virtual_host $http_host;
     ${web.ews.upstream.disable}     if ($virtual_host = '') {
-    ${web.ews.upstream.disable}         set $virtual_host $server_name:$server_port;
+    ${web.ews.upstream.disable}         set $virtual_host $server_addr:$server_port;
     ${web.ews.upstream.disable}     }
     ${web.ews.upstream.disable}     proxy_set_header Host            $virtual_host;
     ${web.ews.upstream.disable} 
@@ -393,7 +394,7 @@ server
         # For Virtual Hosting
         set $virtual_host $http_host;
         if ($virtual_host = '') {
-            set $virtual_host $server_name:$server_port;
+            set $virtual_host $server_addr:$server_port;
         }
         proxy_set_header Host            $virtual_host;
 
@@ -401,14 +402,8 @@ server
         proxy_redirect http://$relhost/ http://$http_host/;
     }
     
-    # Turn down requests to non-existing services
-    location ~* /(${web.upstream.blocked.urls})/ {
-        return 404;
-    }
-    
     location ~* ^/zmerror_.*\.html$ {
         # for custom error pages, internal use only
         internal;
     }
 }
-
