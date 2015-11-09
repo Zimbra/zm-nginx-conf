@@ -1,18 +1,33 @@
-# HTTP Proxy Default Configuration
+!{explode domain(vhn)}
+# HTTPS Proxy Configuration
 #
 server
 {
-    ${core.ipboth.enabled}listen    [::]:${web.http.port} default ipv6only=off;
-    ${core.ipv4only.enabled}listen    ${web.http.port} default;
-    ${core.ipv6only.enabled}listen    [::]:${web.http.port} default;
-    server_name             ${web.server_name.default}.default;
-    client_max_body_size 0;
-    include                 ${core.includes}/${core.cprefix}.web.http.mode-${web.mailmode};
+    server_name             ${vhn};
+    ${web.listen.https.vhost}
+    ${web.add.headers.vhost}
+    client_max_body_size    0;
+    ssl                     on;
+    ssl_protocols           ${web.ssl.protocols};
+    ssl_prefer_server_ciphers ${web.ssl.preferserverciphers};
+    ssl_session_cache       ${ssl.session.cachesize};
+    ssl_session_timeout     ${ssl.session.timeout};
+    ssl_ciphers             ${web.ssl.ciphers};
+    ssl_ecdh_curve          ${web.ssl.ecdh.curve};
+    ssl_certificate         ${ssl.crt};
+    ssl_certificate_key     ${ssl.key};
+    ssl_verify_client       ${ssl.clientcertmode};
+    ssl_stapling            ${web.ssl.stapling};
+    ssl_stapling_verify     ${web.ssl.stapling};
+    ${ssl.clientcertca.enabled}ssl_client_certificate  ${ssl.clientcertca.default};
+    ${ssl.stapling.responder.enabled}ssl_stapling_responder  ${ssl.stapling.responder.url};
+    ${web.ssl.dhparam.enabled}ssl_dhparam             ${web.ssl.dhparam.file};
+    limit_req               zone=one burst=10;
+    include                 ${core.includes.webmode}/${core.cprefix}.web.https.mode-${web.mailmode};
 
-    set $login_upstream     ${web.upstream.login.target};
-    if ($http_cookie ~ "ZM_AUTH_TOKEN=") {
-        set $login_upstream    ${web.upstream.webclient.target};
-    }
+    ${web.blocked.user.agents.enabled}if ($http_user_agent ~* (${web.blocked.user.agents})) {
+    ${web.blocked.user.agents.enabled}    return 403;
+    ${web.blocked.user.agents.enabled}}
 
     ${web.login.upstream.disable} location = ${web.login.upstream.url}/
     ${web.login.upstream.disable} {   
@@ -32,12 +47,19 @@ server
     ${web.login.upstream.disable}     # For Virtual Hosting
     ${web.login.upstream.disable}     set $virtual_host $http_host;
     ${web.login.upstream.disable}     if ($virtual_host = '') {
-    ${web.login.upstream.disable}        set $virtual_host $server_addr:$server_port;
+    ${web.login.upstream.disable}        set $virtual_host $server_name:$server_port;
     ${web.login.upstream.disable}     }
     ${web.login.upstream.disable}     proxy_set_header Host            $virtual_host;
     ${web.login.upstream.disable}
+    ${web.login.upstream.disable}     # Location header fudging
+    ${web.login.upstream.disable}     # Because NGINX SSL speaks plain HTTP to upstream, therefore any
+    ${web.login.upstream.disable}     # redirects to http:// coming from the upstream need to be fudged
+    ${web.login.upstream.disable}     # to https://
+    ${web.login.upstream.disable}     #
+    ${web.login.upstream.disable}     proxy_redirect http://$http_host/ https://$http_host/;
+    ${web.login.upstream.disable}
     ${web.login.upstream.disable}     # Fudge inter-mailbox redirects (kludge)
-    ${web.login.upstream.disable}     proxy_redirect http://$relhost/ http://$http_host/;
+    ${web.login.upstream.disable}     proxy_redirect http://$relhost/ https://$http_host/;
     ${web.login.upstream.disable} }
     
     ${web.login.upstream.disable} location = /
@@ -58,14 +80,21 @@ server
     ${web.login.upstream.disable}     # For Virtual Hosting
     ${web.login.upstream.disable}     set $virtual_host $http_host;
     ${web.login.upstream.disable}     if ($virtual_host = '') {
-    ${web.login.upstream.disable}        set $virtual_host $server_addr:$server_port;
+    ${web.login.upstream.disable}        set $virtual_host $server_name:$server_port;
     ${web.login.upstream.disable}     }
     ${web.login.upstream.disable}     proxy_set_header Host            $virtual_host;
     ${web.login.upstream.disable}
+    ${web.login.upstream.disable}     # Location header fudging
+    ${web.login.upstream.disable}     # Because NGINX SSL speaks plain HTTP to upstream, therefore any
+    ${web.login.upstream.disable}     # redirects to http:// coming from the upstream need to be fudged
+    ${web.login.upstream.disable}     # to https://
+    ${web.login.upstream.disable}     #
+    ${web.login.upstream.disable}     proxy_redirect http://$http_host/ https://$http_host/;
+    ${web.login.upstream.disable}
     ${web.login.upstream.disable}     # Fudge inter-mailbox redirects (kludge)
-    ${web.login.upstream.disable}     proxy_redirect http://$relhost/ http://$http_host/;
+    ${web.login.upstream.disable}     proxy_redirect http://$relhost/ https://$http_host/;
     ${web.login.upstream.disable} }
-      
+    
     location /
     {
         # Begin stray redirect hack
@@ -94,8 +123,8 @@ server
 
         # End stray redirect hack
 
-        # Proxy to Zimbra Upstream
-        proxy_pass ${web.upstream.webclient.target};
+        # Proxy to Zimbra Webclient Upstream
+        proxy_pass       ${web.upstream.webclient.target};
 
         # For audit
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -103,12 +132,19 @@ server
         # For Virtual Hosting
         set $virtual_host $http_host;
         if ($virtual_host = '') {
-            set $virtual_host $server_addr:$server_port;
+            set $virtual_host $server_name:$server_port;
         }
         proxy_set_header Host            $virtual_host;
 
+        # Location header fudging
+        # Because NGINX SSL speaks plain HTTP to upstream, zimbraReverseProxyAvailableLookupTargetstherefore any
+        # redirects to http:// coming from the upstream need to be fudged
+        # to https://
+        # 
+        proxy_redirect http://$http_host/ https://$http_host/;
+
         # Fudge inter-mailbox redirects (kludge)
-        proxy_redirect http://$relhost/ http://$http_host/;
+        proxy_redirect http://$relhost/ https://$http_host/;
     }
 
     #For long polling of Microsoft ActiveSync
@@ -141,10 +177,9 @@ server
         # End stray redirect hack
 
         # Proxy to Zimbra Upstream
-        proxy_pass ${web.upstream.target};
-
-        proxy_read_timeout ${web.upstream.polling.timeout};
-        proxy_buffering    off;
+        proxy_pass          ${web.upstream.target};
+        proxy_read_timeout  ${web.upstream.polling.timeout};
+        proxy_buffering     off;
 
         # For audit
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -152,17 +187,24 @@ server
         # For Virtual Hosting
         set $virtual_host $http_host;
         if ($virtual_host = '') {
-            set $virtual_host $server_addr:$server_port;
+            set $virtual_host $server_name:$server_port;
         }
         proxy_set_header Host            $virtual_host;
 
+        # Location header fudging
+        # Because NGINX SSL speaks plain HTTP to upstream, therefore any
+        # redirects to http:// coming from the upstream need to be fudged
+        # to https://
+        #
+        proxy_redirect http://$http_host/ https://$http_host/;
+
         # Fudge inter-mailbox redirects (kludge)
-        proxy_redirect http://$relhost/ http://$http_host/;
+        proxy_redirect http://$relhost/ https://$http_host/;
     }
 
     # For NoOpRequest
     location ^~ /service/soap/NoOpRequest {
-    
+
         # Begin stray redirect hack
         #
         # In some cases, we may get a stray redirect out of the mailhost,
@@ -190,10 +232,9 @@ server
         # End stray redirect hack
 
         # Proxy to Zimbra Upstream
-        proxy_pass ${web.upstream.target};
-
-        proxy_read_timeout ${web.upstream.noop.timeout};
-        proxy_buffering    off;
+        proxy_pass          ${web.upstream.target};
+        proxy_read_timeout  ${web.upstream.noop.timeout};
+        proxy_buffering     off;
 
         # For audit
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -201,12 +242,19 @@ server
         # For Virtual Hosting
         set $virtual_host $http_host;
         if ($virtual_host = '') {
-            set $virtual_host $server_addr:$server_port;
+            set $virtual_host $server_name:$server_port;
         }
         proxy_set_header Host            $virtual_host;
 
+        # Location header fudging
+        # Because NGINX SSL speaks plain HTTP to upstream, therefore any
+        # redirects to http:// coming from the upstream need to be fudged
+        # to https://
+        #
+        proxy_redirect http://$http_host/ https://$http_host/;
+
         # Fudge inter-mailbox redirects (kludge)
-        proxy_redirect http://$relhost/ http://$http_host/;
+        proxy_redirect http://$relhost/ https://$http_host/;
     }
 
     # For WaitSetRequest
@@ -239,10 +287,9 @@ server
         # End stray redirect hack
 
         # Proxy to Zimbra Upstream
-        proxy_pass ${web.upstream.target};
-
-        proxy_read_timeout ${web.upstream.waitset.timeout};
-        proxy_buffering    off;
+        proxy_pass          ${web.upstream.target};
+        proxy_read_timeout  ${web.upstream.waitset.timeout};
+        proxy_buffering     off;
 
         # For audit
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -250,12 +297,19 @@ server
         # For Virtual Hosting
         set $virtual_host $http_host;
         if ($virtual_host = '') {
-            set $virtual_host $server_addr:$server_port;
+            set $virtual_host $server_name:$server_port;
         }
         proxy_set_header Host            $virtual_host;
 
+        # Location header fudging
+        # Because NGINX SSL speaks plain HTTP to upstream, therefore any
+        # redirects to http:// coming from the upstream need to be fudged
+        # to https://
+        #
+        proxy_redirect http://$http_host/ https://$http_host/;
+
         # Fudge inter-mailbox redirects (kludge)
-        proxy_redirect http://$relhost/ http://$http_host/;
+        proxy_redirect http://$relhost/ https://$http_host/;
     }
 
     location ^~ /autodiscover
@@ -291,8 +345,8 @@ server
         
         # End stray redirect hack
 
-        # Proxy to Zimbra Upstream
-        proxy_pass $autodiscover_upstream;
+        # Proxy to Zimbra Mailbox Upstream
+        proxy_pass       $autodiscover_upstream;
 
         # For audit
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -300,12 +354,19 @@ server
         # For Virtual Hosting
         set $virtual_host $http_host;
         if ($virtual_host = '') {
-            set $virtual_host $server_addr:$server_port;
+            set $virtual_host $server_name:$server_port;
         }
         proxy_set_header Host            $virtual_host;
 
+        # Location header fudging
+        # Because NGINX SSL speaks plain HTTP to upstream, therefore any
+        # redirects to http:// coming from the upstream need to be fudged
+        # to https://
+        #
+        proxy_redirect http://$http_host/ https://$http_host/;
+
         # Fudge inter-mailbox redirects (kludge)
-        proxy_redirect http://$relhost/ http://$http_host/;
+        proxy_redirect http://$relhost/ https://$http_host/;
     }
     
     location ^~ /nginx_status {
@@ -317,6 +378,26 @@ server
         allow ::1;
         deny all;
     }
+    
+    ${web.zss.upstream.disable} location ^~ /zss
+    ${web.zss.upstream.disable} {
+    ${web.zss.upstream.disable}     # Resolver directive to dynamically resolve ip addr change of AWS ELB type upstreams 
+    ${web.zss.upstream.disable}     include             ${web.zss.resolver.file};
+    ${web.zss.upstream.disable}
+    ${web.zss.upstream.disable}     # Proxy to Zimbra ZSS Upstream
+    ${web.zss.upstream.disable}     proxy_pass          https://${web.zss.upstream.hostname};
+    ${web.zss.upstream.disable}     proxy_buffering     off;
+    ${web.zss.upstream.disable}
+    ${web.zss.upstream.disable}     # For audit
+    ${web.zss.upstream.disable}     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    ${web.zss.upstream.disable}
+    ${web.zss.upstream.disable}     # For Virtual Hosting
+    ${web.zss.upstream.disable}     set $virtual_host $http_host;
+    ${web.zss.upstream.disable}     if ($virtual_host = '') {
+    ${web.zss.upstream.disable}         set $virtual_host $server_addr:$server_port;
+    ${web.zss.upstream.disable}     }
+    ${web.zss.upstream.disable}     proxy_set_header Host            $virtual_host;
+    ${web.zss.upstream.disable} }
 
     ${web.xmpp.bosh.upstream.disable} location ^~ ${web.xmpp.local.bind.url}
     ${web.xmpp.bosh.upstream.disable} {
@@ -342,19 +423,26 @@ server
     ${web.ews.upstream.disable}     proxy_pass          ${web.upstream.ews.target};
     ${web.ews.upstream.disable}     proxy_read_timeout  ${web.upstream.polling.timeout};
     ${web.ews.upstream.disable}     proxy_buffering     off;
-    ${web.ews.upstream.disable} 
+    ${web.ews.upstream.disable}
     ${web.ews.upstream.disable}     # For audit
     ${web.ews.upstream.disable}     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-    ${web.ews.upstream.disable} 
+    ${web.ews.upstream.disable}
     ${web.ews.upstream.disable}     # For Virtual Hosting
     ${web.ews.upstream.disable}     set $virtual_host $http_host;
     ${web.ews.upstream.disable}     if ($virtual_host = '') {
-    ${web.ews.upstream.disable}         set $virtual_host $server_addr:$server_port;
+    ${web.ews.upstream.disable}        set $virtual_host $server_name:$server_port;
     ${web.ews.upstream.disable}     }
     ${web.ews.upstream.disable}     proxy_set_header Host            $virtual_host;
-    ${web.ews.upstream.disable} 
+    ${web.ews.upstream.disable}
+    ${web.ews.upstream.disable}     # Location header fudging
+    ${web.ews.upstream.disable}     # Because NGINX SSL speaks plain HTTP to upstream, therefore any
+    ${web.ews.upstream.disable}     # redirects to http:// coming from the upstream need to be fudged
+    ${web.ews.upstream.disable}     # to https://
+    ${web.ews.upstream.disable}     #
+    ${web.ews.upstream.disable}     proxy_redirect http://$http_host/ https://$http_host/;
+    ${web.ews.upstream.disable}
     ${web.ews.upstream.disable}     # Fudge inter-mailbox redirects (kludge)
-    ${web.ews.upstream.disable}     proxy_redirect http://$relhost/ http://$http_host/;
+    ${web.ews.upstream.disable}     proxy_redirect http://$relhost/ https://$http_host/;
     ${web.ews.upstream.disable} }
     
     location ~* /(service|principals|dav|\.well-known|home|octopus|shf|user|certauth|spnegoauth|(zimbra/home)|(zimbra/user))/
@@ -385,8 +473,8 @@ server
 
         # End stray redirect hack
 
-        # Proxy to Zimbra Upstream
-        proxy_pass ${web.upstream.target};
+        # Proxy to Zimbra Mailbox Upstream
+        proxy_pass       ${web.upstream.target};
 
         # For audit
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -394,12 +482,24 @@ server
         # For Virtual Hosting
         set $virtual_host $http_host;
         if ($virtual_host = '') {
-            set $virtual_host $server_addr:$server_port;
+            set $virtual_host $server_name:$server_port;
         }
         proxy_set_header Host            $virtual_host;
 
+        # Location header fudging
+        # Because NGINX SSL speaks plain HTTP to upstream, therefore any
+        # redirects to http:// coming from the upstream need to be fudged
+        # to https://
+        #
+        proxy_redirect http://$http_host/ https://$http_host/;
+
         # Fudge inter-mailbox redirects (kludge)
-        proxy_redirect http://$relhost/ http://$http_host/;
+        proxy_redirect http://$relhost/ https://$http_host/;
+    }
+    
+    # Turn down requests to non-existing services
+    location ~* /(${web.upstream.blocked.urls})/ {
+        return 404;
     }
     
     location ~* ^/zmerror_.*\.html$ {
@@ -407,3 +507,4 @@ server
         internal;
     }
 }
+
