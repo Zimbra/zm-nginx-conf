@@ -2,10 +2,13 @@ http
 {
     # disable nginx version on error pages
     server_tokens off;
+
+    root /opt/zimbra/data/nginx/html;
+
     map $host $time_resolution {
       default s;
     }
-    
+
     # You need to customize these two values by setting local config
     # proxy_server_names_hash_max_size and proxy_names_hash_bucket_size
     # when too many virtual host names are added
