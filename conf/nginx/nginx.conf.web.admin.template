@@ -4,9 +4,9 @@
 server
 {
     server_name             ${vhn};
-    ${core.ipboth.enabled}listen                    ${vip}:${web.admin.port} ipv6only=off;
-    ${core.ipv4only.enabled}listen                  ${vip}:${web.admin.port};
-    ${core.ipv6only.enabled}listen                  ${vip}:${web.admin.port};
+    ${core.ipboth.enabled}listen                    ${vip}${web.admin.port} ipv6only=off;
+    ${core.ipv4only.enabled}listen                  ${vip}${web.admin.port};
+    ${core.ipv6only.enabled}listen                  ${vip}${web.admin.port};
     ${web.add.headers.vhost}
     client_max_body_size    0;
     ssl                     on;
@@ -62,6 +62,6 @@ server
         # Avoid leak the ${web.admin.uport} in the response such as 302 redirection
         #
         proxy_redirect https://$relhost:${web.admin.uport}/ https://$relhost:${web.admin.port}/;
-    }   
+    }
 }
 

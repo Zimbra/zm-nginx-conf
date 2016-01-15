@@ -4,9 +4,9 @@
 server
 {
     server_name         ${vhn};
-    ${core.ipboth.enabled}listen            ${vip}:${web.http.port} ipv6only=off;
-    ${core.ipv4only.enabled}listen            ${vip}:${web.http.port};
-    ${core.ipv6only.enabled}listen            ${vip}:${web.http.port};
+    ${core.ipboth.enabled}listen            ${vip}${web.http.port} ipv6only=off;
+    ${core.ipv4only.enabled}listen            ${vip}${web.http.port};
+    ${core.ipv6only.enabled}listen            ${vip}${web.http.port};
     client_max_body_size 0;
     include                 ${core.includes}/${core.cprefix}.web.http.mode-${web.mailmode};
 
@@ -16,14 +16,14 @@ server
     }
 
     ${web.login.upstream.disable} location = ${web.login.upstream.url}/
-    ${web.login.upstream.disable} {   
+    ${web.login.upstream.disable} {
     ${web.login.upstream.disable}     set $mailhostport ${web.http.uport};   # replace this with *the* mailhost port
     ${web.login.upstream.disable}     set $relhost $host;
     ${web.login.upstream.disable}
     ${web.login.upstream.disable}     if ($mailhostport != 80) {   # standard HTTP port, do not replace
     ${web.login.upstream.disable}         set $relhost $host:$mailhostport;
     ${web.login.upstream.disable}     }
-    ${web.login.upstream.disable}                                  
+    ${web.login.upstream.disable}
     ${web.login.upstream.disable}     # Proxy to Zimbra Login Upstream
     ${web.login.upstream.disable}     proxy_pass          $login_upstream;
     ${web.login.upstream.disable}
@@ -40,16 +40,16 @@ server
     ${web.login.upstream.disable}     # Fudge inter-mailbox redirects (kludge)
     ${web.login.upstream.disable}     proxy_redirect http://$relhost/ http://$http_host/;
     ${web.login.upstream.disable} }
-    
+
     ${web.login.upstream.disable} location = /
-    ${web.login.upstream.disable} {   
+    ${web.login.upstream.disable} {
     ${web.login.upstream.disable}     set $mailhostport ${web.http.uport};   # replace this with *the* mailhost port
     ${web.login.upstream.disable}     set $relhost $host;
     ${web.login.upstream.disable}
     ${web.login.upstream.disable}     if ($mailhostport != 80) {   # standard HTTP port, do not replace
     ${web.login.upstream.disable}         set $relhost $host:$mailhostport;
     ${web.login.upstream.disable}     }
-    ${web.login.upstream.disable}                                  
+    ${web.login.upstream.disable}
     ${web.login.upstream.disable}     # Proxy to Zimbra Login Upstream
     ${web.login.upstream.disable}     proxy_pass          $login_upstream;
     ${web.login.upstream.disable}
@@ -66,25 +66,25 @@ server
     ${web.login.upstream.disable}     # Fudge inter-mailbox redirects (kludge)
     ${web.login.upstream.disable}     proxy_redirect http://$relhost/ http://$http_host/;
     ${web.login.upstream.disable} }
-      
+
     location /
     {
         # Begin stray redirect hack
-        # 
+        #
         # In some cases, we may get a stray redirect out of the mailhost,
         # which attempts to send us to $host:$mailhostport, where:
-        # 
+        #
         # $host is the host portion (excluding port) of the proxy URL
         # $mailhostport is the zimbraMailPort as applies to the mailhost
         #   server being redirected to
-        # 
+        #
         # This is the case when one mailhost in the upstream cluster is
         # trying to redirect to another mailhost in the same cluster
         # In this case, we need to trap and fudge this location header
-        # 
-        # NOTE that this will only work in the cases where each mailhost 
+        #
+        # NOTE that this will only work in the cases where each mailhost
         # within the cluster has the same mailhostport (Limitation)
-        # 
+        #
 
         set $mailhostport ${web.http.uport};   # replace this with *the* mailhost port
         set $relhost $host;
@@ -163,7 +163,7 @@ server
 
     # For NoOpRequest
     location ^~ /service/soap/NoOpRequest {
-    
+
         # Begin stray redirect hack
         #
         # In some cases, we may get a stray redirect out of the mailhost,
@@ -289,7 +289,7 @@ server
         ${web.ews.upstream.disable}    if ($http_user_agent ~ "ExchangeWebServices") {
         ${web.ews.upstream.disable}       set $autodiscover_upstream    ${web.upstream.ews.target};
         ${web.ews.upstream.disable}    }
-        
+
         # End stray redirect hack
 
         # Proxy to Zimbra Upstream
@@ -308,10 +308,10 @@ server
         # Fudge inter-mailbox redirects (kludge)
         proxy_redirect http://$relhost/ http://$http_host/;
     }
-    
+
     location ^~ /nginx_status {
         # Location block to enable the stub status module
-        
+
         stub_status on;
         access_log off;
         allow 127.0.0.1;
@@ -343,21 +343,21 @@ server
     ${web.ews.upstream.disable}     proxy_pass          ${web.upstream.ews.target};
     ${web.ews.upstream.disable}     proxy_read_timeout  ${web.upstream.polling.timeout};
     ${web.ews.upstream.disable}     proxy_buffering     off;
-    ${web.ews.upstream.disable} 
+    ${web.ews.upstream.disable}
     ${web.ews.upstream.disable}     # For audit
     ${web.ews.upstream.disable}     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-    ${web.ews.upstream.disable} 
+    ${web.ews.upstream.disable}
     ${web.ews.upstream.disable}     # For Virtual Hosting
     ${web.ews.upstream.disable}     set $virtual_host $http_host;
     ${web.ews.upstream.disable}     if ($virtual_host = '') {
     ${web.ews.upstream.disable}         set $virtual_host $server_name:$server_port;
     ${web.ews.upstream.disable}     }
     ${web.ews.upstream.disable}     proxy_set_header Host            $virtual_host;
-    ${web.ews.upstream.disable} 
+    ${web.ews.upstream.disable}
     ${web.ews.upstream.disable}     # Fudge inter-mailbox redirects (kludge)
     ${web.ews.upstream.disable}     proxy_redirect http://$relhost/ http://$http_host/;
     ${web.ews.upstream.disable} }
-    
+
     location ~* /(service|principals|dav|\.well-known|home|octopus|shf|user|certauth|spnegoauth|(zimbra/home)|(zimbra/user))/
     {
         # Begin stray redirect hack
@@ -402,7 +402,7 @@ server
         # Fudge inter-mailbox redirects (kludge)
         proxy_redirect http://$relhost/ http://$http_host/;
     }
-    
+
     location ~* ^/zmerror_.*\.html$ {
         # for custom error pages, internal use only
         internal;
