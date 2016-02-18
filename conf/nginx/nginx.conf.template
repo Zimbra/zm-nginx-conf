@@ -4,8 +4,8 @@
 working_directory ${core.workdir};
 include ${core.includes}/${core.cprefix}.main;
 include ${core.includes}/${core.cprefix}.memcache;
-include ${core.includes}/${core.cprefix}.zmlookup;
-${mail.enabled}include ${core.includes}/${core.cprefix}.mail;
-${web.enabled}include ${core.includes}/${core.cprefix}.web;
+${lookup.available}include ${core.includes}/${core.cprefix}.zmlookup;
+${lookup.available}${mail.enabled}include ${core.includes}/${core.cprefix}.mail;
+${lookup.available}${web.enabled}include ${core.includes}/${core.cprefix}.web;
 
 # Don't edit the below comment
