@@ -4,9 +4,7 @@
 server
 {
     server_name             ${vhn};
-    ${core.ipboth.enabled}listen                    ${vip}${web.admin.port} ipv6only=off;
-    ${core.ipv4only.enabled}listen                  ${vip}${web.admin.port};
-    ${core.ipv6only.enabled}listen                  ${vip}${web.admin.port};
+    ${web.listen.admin.vhost}
     ${web.add.headers.vhost}
     client_max_body_size    0;
     ssl                     on;
@@ -18,7 +16,16 @@ server
     ssl_ecdh_curve          ${web.ssl.ecdh.curve};
     ssl_certificate         ${ssl.crt};
     ssl_certificate_key     ${ssl.key};
+    ssl_stapling            ${web.ssl.stapling};
+    ssl_stapling_verify     ${web.ssl.stapling};
+    ${ssl.clientcertca.enabled}ssl_client_certificate  ${ssl.clientcertca.default};
+    ${ssl.stapling.responder.enabled}ssl_stapling_responder  ${ssl.stapling.responder.url};
     ${web.ssl.dhparam.enabled}ssl_dhparam             ${web.ssl.dhparam.file};
+    limit_req               zone=one burst=10;
+
+    ${web.blocked.user.agents.enabled}if ($http_user_agent ~* (${web.blocked.user.agents})) {
+    ${web.blocked.user.agents.enabled}    return 403;
+    ${web.blocked.user.agents.enabled}}
 
     location /
     {
@@ -62,6 +69,6 @@ server
         # Avoid leak the ${web.admin.uport} in the response such as 302 redirection
         #
         proxy_redirect https://$relhost:${web.admin.uport}/ https://$relhost:${web.admin.port}/;
-    }
+    }   
 }
 
