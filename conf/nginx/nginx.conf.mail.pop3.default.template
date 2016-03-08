@@ -1,0 +1,19 @@
+# POP3 proxy default configuration
+#
+server
+{
+    ${core.ipboth.enabled}listen                  [::]:${mail.pop3.port} ipv6only=off;
+    ${core.ipv4only.enabled}listen                ${mail.pop3.port};
+    ${core.ipv6only.enabled}listen                [::]:${mail.pop3.port};
+    ${web.ssl.dhparam.enabled}ssl_dhparam         ${web.ssl.dhparam.file};
+    protocol                pop3;
+    proxy                   on;
+    timeout                 ${mail.pop3.timeout};
+    proxy_timeout           ${mail.pop3.proxytimeout};
+    sasl_service_name       "pop";
+    starttls                ${mail.pop3.tls};
+    ssl_certificate         ${ssl.crt.default};
+    ssl_certificate_key     ${ssl.key.default};
+}
+
+
