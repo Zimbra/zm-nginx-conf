@@ -19,6 +19,8 @@ server
     ssl_verify_client       ${ssl.clientcertmode};
     ssl_stapling            ${web.ssl.stapling};
     ssl_stapling_verify     ${web.ssl.stapling};
+    proxy_ssl_protocols           ${web.ssl.protocols};
+    proxy_ssl_ciphers             ${web.ssl.ciphers};
     ${ssl.clientcertca.enabled}ssl_client_certificate  ${ssl.clientcertca.default};
     ${ssl.stapling.responder.enabled}ssl_stapling_responder  ${ssl.stapling.responder.url};
     ${web.ssl.dhparam.enabled}ssl_dhparam             ${web.ssl.dhparam.file};
