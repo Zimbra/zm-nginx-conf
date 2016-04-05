@@ -1,0 +1,16 @@
+# POP3 proxy default configuration
+# 
+server
+{
+    ${mail.listen.pop3.default}
+    protocol                pop3;
+    proxy                   on;
+    timeout                 ${mail.pop3.timeout};
+    proxy_timeout           ${mail.pop3.proxytimeout};
+    sasl_service_name       "pop";
+    starttls                ${mail.pop3.tls};
+    ssl_certificate         ${ssl.crt.default};
+    ssl_certificate_key     ${ssl.key.default};
+}
+
+
