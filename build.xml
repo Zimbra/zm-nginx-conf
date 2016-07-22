@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<project name="ZimbraNginxConf" default="deploy">
+  <import file="../zm-zcs/ant-global.xml" />
+  <!-- properties -->
+  <property name="zimbra.conf.dir" location="${zimbra.home.dir}/conf" />
+  <property name="nginx.conf.dir" location="${zimbra.conf.dir}/nginx" />
+  <property name="nginx.templates.dir" location="${nginx.conf.dir}/templates" />
+  <property name="src.conf.dir" location="conf/nginx" />
+
+  <!-- deploy -->
+  <target name="deploy" description="Deploy the nginx configuration">
+    <ant dir="${server.dir}" target="stop-webserver" inheritAll="false"/>
+    <copy todir="${nginx.templates.dir}">
+      <fileset dir="${src.conf.dir}" includes="*" />
+    </copy>
+    <ant dir="${server.dir}" target="start-webserver" inheritAll="false"/>
+  </target>
+</project>
