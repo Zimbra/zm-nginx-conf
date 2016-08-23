@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<project name="ZimbraNginxConf" default="deploy">
+<project name="zm-nginx-conf" default="deploy">
   <import file="../zm-zcs/ant-global.xml" />
   <!-- properties -->
   <property name="zimbra.conf.dir" location="${zimbra.home.dir}/conf" />
