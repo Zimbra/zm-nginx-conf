@@ -117,6 +117,80 @@ mail
     #
     mail_login_ip_ttl               ${mail.ipttl};
 
+    # mail_login_ip_imap_max
+    #
+    # Sets the maximum number of times that any user is allowed to log in from
+    # a particular IP over IMAP to this proxy server before the login is rejected
+    # with an appropriate protocol specific bye response.
+    #
+    # This counter is cumulative for all users that appear to the proxy to be
+    # logging in from the same IP address.
+    # If multiple users appear to the proxy to be logging in from the same IP
+    # address (usual with NATing), then each of the different users' login will
+    # contribute to increasing the hit counter for that IP address, and when the
+    # counter eventually exceeds mail_login_ip_imap_max, then the connections from
+    # that IP address will be throttled
+    # Therefore, all users from the same IP will contribute to
+    # (and be affected by) this counter
+    # Logins using the IMAP protocol (IMAP/IMAPS) will affect this
+    # counter, (the counter is aggregate for IMAP)
+    # See notes accompanying the mail_login_ip_imap_ttl for reasonable values for
+    # this directive
+    # If this value is set to 0, the handling of imap connections will fall back to
+    # using the mail_login_ip_max setting
+    #
+    mail_login_ip_imap_max          ${mail.imapmax};
+
+    # mail_login_ip_imap_ttl
+    #
+    # Sets the time-to-live for the hit counter for IMAP login throttling
+    # Used in conjunction with mail_login_ip_imap_max, this defines the semantics
+    # of the throttling for IMAP logins. Therefore, if this is set to 3600s, and
+    # if mail_login_ip_imap_max is set to 1000, then it means that NGINX should not
+    # allow more than 1000 IMAP users to log in to the proxy from the same IP,
+    # within the time interval of an hour (=3600s)
+    # The semantics for such a configuration would then be -
+    # "allow maximum 1000 IMAP users per hour from any given IP address"
+    #
+    mail_login_ip_imap_ttl          ${mail.imapttl};
+
+    # mail_login_ip_pop3_max
+    #
+    # Sets the maximum number of times that any user is allowed to log in from
+    # a particular IP over POP3 to this proxy server before the login is rejected
+    # with an appropriate protocol specific bye response.
+    #
+    # This counter is cumulative for all users that appear to the proxy to be
+    # logging in from the same IP address.
+    # If multiple users appear to the proxy to be logging in from the same IP
+    # address (usual with NATing), then each of the different users' login will
+    # contribute to increasing the hit counter for that IP address, and when the
+    # counter eventually exceeds mail_login_ip_pop3_max, then the connections from
+    # that IP address will be throttled
+    # Therefore, all users from the same IP will contribute to
+    # (and be affected by) this counter
+    # Logins using the POP3 protocol (POP3/POP3S) will affect this
+    # counter, (the counter is aggregate for POP3)
+    # See notes accompanying the mail_login_ip_pop3_ttl for reasonable values for
+    # this directive
+    # If this value is set to 0, the handling of pop3 connections will fall back to
+    # using the mail_login_ip_max setting
+    #
+    mail_login_ip_pop3_max          ${mail.pop3max};
+
+    # mail_login_ip_pop3_ttl
+    #
+    # Sets the time-to-live for the hit counter for POP3 login throttling
+    # Used in conjunction with mail_login_ip_pop3_max, this defines the semantics
+    # of the throttling for POP3 logins. Therefore, if this is set to 3600s, and
+    # if mail_login_ip_pop3_max is set to 1000, then it means that NGINX should not
+    # allow more than 1000 POP3 users to log in to the proxy from the same IP,
+    # within the time interval of an hour (=3600s)
+    # The semantics for such a configuration would then be -
+    # "allow maximum 1000 IMAP users per hour from any given IP address"
+    #
+    mail_login_ip_pop3_ttl          ${mail.pop3ttl};
+
     # Define a textual message that should be displayed to the user when
     # his/her connection is rejected based on IP overusage
     # This message will be encapsulated in the proper protocol specific
