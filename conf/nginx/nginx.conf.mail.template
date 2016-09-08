@@ -213,6 +213,9 @@ mail
     mail_login_user_ttl             ${mail.userttl};
     mail_login_user_rejectmsg       "${mail.userrej}";
 
+    # List of servers to which no ip throttling will be done
+    ${mail.whitelistip.:servers}
+
     # Issue POP3 XOIP before logging in to upstream (Audit purposes)
     #
     proxy_issue_pop3_xoip   ${mail.upstream.pop3xoip};
