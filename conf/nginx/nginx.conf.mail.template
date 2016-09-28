@@ -216,6 +216,10 @@ mail
     # List of servers to which no ip throttling will be done
     ${mail.whitelistip.:servers}
 
+    # Sets the time-to-live of the list of servers for which no ip throttling
+    # will be done
+    ${mail_whitelist_ip_ttl}        ${mail.whitelist.ttl};
+
     # Issue POP3 XOIP before logging in to upstream (Audit purposes)
     #
     proxy_issue_pop3_xoip   ${mail.upstream.pop3xoip};
