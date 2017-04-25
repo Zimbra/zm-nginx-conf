@@ -218,7 +218,7 @@ mail
 
     # Sets the time-to-live of the list of servers for which no ip throttling
     # will be done
-    ${mail_whitelist_ip_ttl}        ${mail.whitelist.ttl};
+    mail_whitelist_ip_ttl   ${mail.whitelist.ttl};
 
     # Issue POP3 XOIP before logging in to upstream (Audit purposes)
     #
