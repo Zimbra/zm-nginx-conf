@@ -3,6 +3,8 @@ http
     # disable nginx version on error pages
     server_tokens off;
 
+    ${upstream.fair.shm.size}
+
     root /opt/zimbra/data/nginx/html;
 
     # You need to customize these two values by setting local config
@@ -11,12 +13,12 @@ http
     server_names_hash_max_size ${web.server_names.max_size};
     server_names_hash_bucket_size ${web.server_names.bucket_size};
 
-    # Define whether nginx will match exact server version against the 
+    # Define whether nginx will match exact server version against the
     # version received in the client request. Defaults to 'on'
-    # Setting this to off will make nginx compare only the major and minor 
+    # Setting this to off will make nginx compare only the major and minor
     # server versions (eg. all 8.5.x will be treated same by nginx)
     exact_version_check ${web.upstream.exactversioncheck};
-    
+
     # Define the collection of upstream HTTP webclient servers to which we will proxy
     # Define each server:port against a server directive
     #
@@ -25,7 +27,7 @@ http
         ${web.upstream.webclient.:servers}
         zmauth;
     }
-    
+
     #  Define the collection of upstream HTTP servers to which we will proxy
     #  Define each server:port against a server directive
     #
@@ -43,7 +45,7 @@ http
         ${web.ssl.upstream.webclient.:servers}
         zmauth;
     }
-    
+
     #  Define the collection of upstream HTTPS servers to which we will proxy
     #  Define each server:port against a server directive
     upstream ${web.ssl.upstream.name}
@@ -60,7 +62,7 @@ http
         ${web.admin.upstream.adminclient.:servers}
         zmauth_admin;
     }
-    
+
     #  Define the collection of upstream admin console servers to which we will
     #  proxy. Define each server:port against a server directive
     #
@@ -69,7 +71,7 @@ http
         ${web.admin.upstream.:servers}
         zmauth_admin;
     }
-   
+
     #  Define the collection of upstream HTTP EWS servers to which we will
     #  proxy EWS request. Define each server:port against a server directive
     #
@@ -78,7 +80,7 @@ http
     ${web.ews.upstream.disable}    ${web.upstream.ewsserver.:servers}
     ${web.ews.upstream.disable}    zmauth;
     ${web.ews.upstream.disable} }
-    
+
     #  Define the collection of upstream HTTPS EWS servers to which we will
     #  proxy EWS request. Define each server:port against a server directive
     #
@@ -87,7 +89,7 @@ http
     ${web.ews.upstream.disable}    ${web.ssl.upstream.ewsserver.:servers}
     ${web.ews.upstream.disable}    zmauth;
     ${web.ews.upstream.disable} }
-    
+
     #  Define the collection of upstream HTTP Login servers to which we will
     #  proxy login request. Define each server:port against a server directive
     #
@@ -96,7 +98,7 @@ http
     ${web.login.upstream.disable}    ${web.upstream.loginserver.:servers}
     ${web.login.upstream.disable}    zmauth;
     ${web.login.upstream.disable} }
-    
+
     #  Define the collection of upstream HTTPS Login servers to which we will
     #  proxy login request. Define each server:port against a server directive
     #
@@ -105,7 +107,7 @@ http
     ${web.login.upstream.disable}    ${web.ssl.upstream.loginserver.:servers}
     ${web.login.upstream.disable}    zmauth;
     ${web.login.upstream.disable} }
-    
+
     # Enable Access logs for web traffic
     log_format upstream '$remote_addr:$remote_port - $remote_user [$time_local]  '
       '"$request" $status $bytes_sent '
