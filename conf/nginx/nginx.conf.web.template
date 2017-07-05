@@ -3,7 +3,7 @@ http
     # disable nginx version on error pages
     server_tokens off;
 
-    ${upstream.fair.shm.size};
+    ${upstream.fair.shm.size}
 
     root /opt/zimbra/data/nginx/html;
 
