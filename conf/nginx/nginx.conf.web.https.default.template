@@ -1,25 +1,5 @@
 # HTTPS Proxy Default Configuration
 #
-server {
-    ${core.ipboth.enabled}listen                  [::]:${web.https.port} default_server ipv6only=off;
-    ${core.ipv4only.enabled}listen                ${web.https.port} default_server;
-    ${core.ipv6only.enabled}listen                [::]:${web.https.port} default_server;
-
-    ssl                     on;
-    ssl_protocols           ${web.ssl.protocols};
-    ssl_prefer_server_ciphers ${web.ssl.preferserverciphers};
-    ssl_session_cache       ${ssl.session.cachesize};
-    ssl_session_timeout     ${ssl.session.timeout};
-    ssl_ciphers             ${web.ssl.ciphers};
-    ssl_ecdh_curve          ${web.ssl.ecdh.curve};
-    ssl_certificate         ${ssl.crt.default};
-    ssl_certificate_key     ${ssl.key.default};
-    ssl_verify_client       ${ssl.clientcertmode.default};
-    ssl_verify_depth        ${ssl.clientcertdepth.default};
-    ${web.ssl.dhparam.enabled}ssl_dhparam             ${web.ssl.dhparam.file};
-    return 444;
-}
-
 server
 {
     ${core.ipboth.enabled}listen                  [::]:${web.https.port} ipv6only=off;
