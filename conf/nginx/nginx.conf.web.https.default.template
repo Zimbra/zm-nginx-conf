@@ -1,24 +1,26 @@
 # HTTPS Proxy Default Configuration
-#
-server {
-    ${core.ipboth.enabled}listen                  [::]:${web.https.port} default_server ipv6only=off;
-    ${core.ipv4only.enabled}listen                ${web.https.port} default_server;
-    ${core.ipv6only.enabled}listen                [::]:${web.https.port} default_server;
 
-    ssl                     on;
-    ssl_protocols           ${web.ssl.protocols};
-    ssl_prefer_server_ciphers ${web.ssl.preferserverciphers};
-    ssl_session_cache       ${ssl.session.cachesize};
-    ssl_session_timeout     ${ssl.session.timeout};
-    ssl_ciphers             ${web.ssl.ciphers};
-    ssl_ecdh_curve          ${web.ssl.ecdh.curve};
-    ssl_certificate         ${ssl.crt.default};
-    ssl_certificate_key     ${ssl.key.default};
-    ssl_verify_client       ${ssl.clientcertmode.default};
-    ssl_verify_depth        ${ssl.clientcertdepth.default};
-    ${web.ssl.dhparam.enabled}ssl_dhparam             ${web.ssl.dhparam.file};
-    return 444;
-}
+${web.strict.servername}# Strict servername enforcing block
+${web.strict.servername}# Enabled/disabled through the 'zimbraReverseProxyStrictServerName' configuration item
+${web.strict.servername}server {
+${web.strict.servername}    ${core.ipboth.enabled}listen                  [::]:${web.https.port} default_server ipv6only=off;
+${web.strict.servername}    ${core.ipv4only.enabled}listen                ${web.https.port} default_server;
+${web.strict.servername}    ${core.ipv6only.enabled}listen                [::]:${web.https.port} default_server;
+${web.strict.servername}
+${web.strict.servername}    ssl                     on;
+${web.strict.servername}    ssl_protocols           ${web.ssl.protocols};
+${web.strict.servername}    ssl_prefer_server_ciphers ${web.ssl.preferserverciphers};
+${web.strict.servername}    ssl_session_cache       ${ssl.session.cachesize};
+${web.strict.servername}    ssl_session_timeout     ${ssl.session.timeout};
+${web.strict.servername}    ssl_ciphers             ${web.ssl.ciphers};
+${web.strict.servername}    ssl_ecdh_curve          ${web.ssl.ecdh.curve};
+${web.strict.servername}    ssl_certificate         ${ssl.crt.default};
+${web.strict.servername}    ssl_certificate_key     ${ssl.key.default};
+${web.strict.servername}    ssl_verify_client       ${ssl.clientcertmode.default};
+${web.strict.servername}    ssl_verify_depth        ${ssl.clientcertdepth.default};
+${web.strict.servername}    ${web.ssl.dhparam.enabled}ssl_dhparam             ${web.ssl.dhparam.file};
+${web.strict.servername}    return 400;
+${web.strict.servername}}
 
 server
 {
