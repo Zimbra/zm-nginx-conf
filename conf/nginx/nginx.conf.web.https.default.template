@@ -2,10 +2,16 @@
 
 ${web.strict.servername}# Strict servername enforcing block
 ${web.strict.servername}# Enabled/disabled through the 'zimbraReverseProxyStrictServerName' configuration item
+${web.strict.servername}# The $\{listen.:addresses\} is NOT demarcated with web.strict.servername on purpose.
 ${web.strict.servername}server {
 ${web.strict.servername}    ${core.ipboth.enabled}listen                  [::]:${web.https.port} default_server ipv6only=off;
 ${web.strict.servername}    ${core.ipv4only.enabled}listen                ${web.https.port} default_server;
 ${web.strict.servername}    ${core.ipv6only.enabled}listen                [::]:${web.https.port} default_server;
+${web.strict.servername}
+${web.strict.servername}
+${web.strict.servername}    # Listen addresses extracted from `zimbraVirtualIPAddress` on each domain
+${listen.:addresses}
+${web.strict.servername}    # Listen addresses extracted from `zimbraVirtualIPAddress` on each domain
 ${web.strict.servername}
 ${web.strict.servername}    ssl                     on;
 ${web.strict.servername}    ssl_protocols           ${web.ssl.protocols};
