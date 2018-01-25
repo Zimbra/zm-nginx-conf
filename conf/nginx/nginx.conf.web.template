@@ -110,8 +110,8 @@ http
 
     # Enable Access logs for web traffic
     log_format upstream '$remote_addr:$remote_port - $remote_user [$time_local]  '
-      '"$request" $status $bytes_sent '
-      '"$http_referer" "$http_user_agent" "$upstream_addr"';
+      '"$request_method $scheme://$host$request_uri $server_protocol" $status $bytes_sent '
+      '"$http_referer" "$http_user_agent" "$upstream_addr" "$server_addr:$server_port"';
     access_log ${web.logfile} upstream;
 
     # Set proxy timeout
