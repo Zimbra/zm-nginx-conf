@@ -1,0 +1,5 @@
+!{explode server(docs)}
+upstream docs-${server_id}
+{
+  server ${server_hostname}:9980;
+}
