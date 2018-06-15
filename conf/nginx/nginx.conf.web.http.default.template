@@ -406,4 +406,6 @@ server
         # for custom error pages, internal use only
         internal;
     }
+
+    include                 ${core.includes}/${core.cprefix}.docs.common;
 }

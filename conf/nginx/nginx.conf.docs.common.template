@@ -1,0 +1,20 @@
+!{explode server(docs)}
+
+# static files
+location ^~ /docs/${server_id}/loleaflet {
+    rewrite /docs/${server_id}/(.*) /$1 break;
+    proxy_pass http://docs-${server_id};
+    proxy_set_header Host $http_host;
+    proxy_http_version 1.1;
+}
+
+# websockets, download, presentation and image upload
+location ^~ /docs/${server_id}/lool {
+    rewrite  ^  $request_uri;            # get original URI
+    rewrite /docs/${server_id}/(.*) /$1 break;
+    proxy_pass http://docs-${server_id}$uri;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "upgrade";
+    proxy_set_header Host $http_host;
+    proxy_http_version 1.1;
+}
