@@ -72,6 +72,8 @@ http
         zmauth_admin;
     }
 
+    include                 ${core.includes}/${core.cprefix}.docs.upstream;
+
     #  Define the collection of upstream HTTP EWS servers to which we will
     #  proxy EWS request. Define each server:port against a server directive
     #
