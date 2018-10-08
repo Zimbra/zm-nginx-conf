@@ -54,6 +54,20 @@ http
         zmauth;
     }
 
+    #  Define the collection of upstream HTTP servers to dedicated zx port of jetty
+    upstream ${web.upstream.zx.name}
+    {
+        ${web.upstream.zx.:servers}
+        zmauth;
+    }
+
+    #  Define the collection of upstream HTTPS servers to dedicated zx ssl port of jetty
+    upstream ${web.ssl.upstream.zx.name}
+    {
+        ${web.ssl.upstream.zx.:servers}
+        zmauth;
+    }
+
      #  Define the collection of upstream admin client servers to which we will
     #  proxy. Define each server:port against a server directive
     #
