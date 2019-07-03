@@ -58,14 +58,14 @@ http
     upstream ${web.upstream.zx.name}
     {
         ${web.upstream.zx.:servers}
-        zmauth;
+        zmauth_zx;
     }
 
     #  Define the collection of upstream HTTPS servers to dedicated zx ssl port of jetty
     upstream ${web.ssl.upstream.zx.name}
     {
         ${web.ssl.upstream.zx.:servers}
-        zmauth;
+        zmauth_zx;
     }
 
      #  Define the collection of upstream admin client servers to which we will
