@@ -58,6 +58,22 @@ server
         set $login_upstream    ${web.upstream.webclient.target};
     }
 
+    # if to loginOp is logout, all the requests should be routed to login server so that updated assets can be loaded
+    if ($arg_loginOp = "logout") {
+        set $login_upstream    ${web.upstream.login.target};
+    }
+
+    # Same as above for relogin loginOp
+    if ($arg_loginOp = "relogin") {
+        set $login_upstream    ${web.upstream.login.target};
+    }
+
+    # the mobile client has been discontinued in Zimbra9, hence if the client is mobile, rerouting the requests to user's
+    # server - which could be an old one and not yet upgraded
+    if ($arg_client = "mobile") {
+        set $login_upstream    https://zimbra_ssl_webclient;
+    }
+
     ${web.login.upstream.disable} location = ${web.login.upstream.url}/
     ${web.login.upstream.disable} {
     ${web.login.upstream.disable}     set $mailhostport ${web.http.uport};   # replace this with *the* mailhost port
@@ -152,8 +168,8 @@ server
 
         # End stray redirect hack
 
-        # Proxy to Zimbra Webclient Upstream
-        proxy_pass       ${web.upstream.webclient.target};
+        # Proxy to Login Upstream
+        proxy_pass       $login_upstream;
 
         # For audit
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
