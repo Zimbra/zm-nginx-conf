@@ -2,12 +2,11 @@
 #
 server
 {
-    ${core.ipboth.enabled}listen                  [::]:${web.admin.port} default ipv6only=off;
-    ${core.ipv4only.enabled}listen                ${web.admin.port} default;
-    ${core.ipv6only.enabled}listen                [::]:${web.admin.port} default;
+    ${core.ipboth.enabled}listen                  [::]:${web.admin.port} default ipv6only=off ssl;
+    ${core.ipv4only.enabled}listen                ${web.admin.port} default ssl;
+    ${core.ipv6only.enabled}listen                [::]:${web.admin.port} default ssl;
     ${web.add.headers.default}
     client_max_body_size    0;
-    ssl                     on;
     ssl_protocols           ${web.ssl.protocols};
     ssl_prefer_server_ciphers ${web.ssl.preferserverciphers};
     ssl_session_cache       ${ssl.session.cachesize};
