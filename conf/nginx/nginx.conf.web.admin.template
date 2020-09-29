@@ -4,12 +4,11 @@
 server
 {
     server_name             ${vhn};
-    ${core.ipboth.enabled}listen                    ${vip}${web.admin.port} ipv6only=off;
-    ${core.ipv4only.enabled}listen                  ${vip}${web.admin.port};
-    ${core.ipv6only.enabled}listen                  ${vip}${web.admin.port};
+    ${core.ipboth.enabled}listen                    ${vip}${web.admin.port} ipv6only=off ssl;
+    ${core.ipv4only.enabled}listen                  ${vip}${web.admin.port} ssl;
+    ${core.ipv6only.enabled}listen                  ${vip}${web.admin.port} ssl;
     ${web.add.headers.vhost}
     client_max_body_size    0;
-    ssl                     on;
     ssl_protocols           ${web.ssl.protocols};
     ssl_prefer_server_ciphers ${web.ssl.preferserverciphers};
     ssl_session_cache       ${ssl.session.cachesize};
