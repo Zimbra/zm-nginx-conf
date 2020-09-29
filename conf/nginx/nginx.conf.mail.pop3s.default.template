@@ -2,15 +2,14 @@
 #
 server
 {
-    ${core.ipboth.enabled}listen              [::]:${mail.pop3s.port} ipv6only=off;
-    ${core.ipv4only.enabled}listen            ${mail.pop3s.port};
-    ${core.ipv6only.enabled}listen            [::]:${mail.pop3s.port};
+    ${core.ipboth.enabled}listen              [::]:${mail.pop3s.port} ipv6only=off ssl;
+    ${core.ipv4only.enabled}listen            ${mail.pop3s.port} ssl;
+    ${core.ipv6only.enabled}listen            [::]:${mail.pop3s.port} ssl;
     ${web.ssl.dhparam.enabled}ssl_dhparam     ${web.ssl.dhparam.file};
     protocol            pop3;
     proxy               on;
     timeout             ${mail.pop3.timeout};
     proxy_timeout       ${mail.pop3.proxytimeout};
-    ssl                 on;
     ssl_certificate     ${ssl.crt.default};
     ssl_certificate_key ${ssl.key.default};
     sasl_service_name   "pop";
