@@ -29,9 +29,9 @@ ${web.strict.servername}}
 
 server
 {
-    ${core.ipboth.enabled}listen                  [::]:${web.https.port} ipv6only=off ssl;
-    ${core.ipv4only.enabled}listen                ${web.https.port} ssl;
-    ${core.ipv6only.enabled}listen                [::]:${web.https.port} ssl;
+    ${core.ipboth.enabled}listen                  [::]:${web.https.port} ipv6only=off ssl http2;
+    ${core.ipv4only.enabled}listen                ${web.https.port} ssl http2;
+    ${core.ipv6only.enabled}listen                [::]:${web.https.port} ssl http2;
 
     ${web.add.headers.default}
     server_name             ${web.server_name.default}; # add aliases and perhaps public
