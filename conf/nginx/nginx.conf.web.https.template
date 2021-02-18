@@ -4,9 +4,9 @@
 server
 {
     server_name             ${vhn};
-    ${core.ipboth.enabled}listen                  ${vip}${web.https.port} ipv6only=off ssl;
-    ${core.ipv4only.enabled}listen                  ${vip}${web.https.port} ssl;
-    ${core.ipv6only.enabled}listen                  ${vip}${web.https.port} ssl;
+    ${core.ipboth.enabled}listen                  ${vip}${web.https.port} ipv6only=off ssl http2;
+    ${core.ipv4only.enabled}listen                  ${vip}${web.https.port} ssl http2;
+    ${core.ipv6only.enabled}listen                  ${vip}${web.https.port} ssl http2;
     ${web.add.headers.vhost}
     client_max_body_size    0;
     ssl_protocols           ${web.ssl.protocols};
