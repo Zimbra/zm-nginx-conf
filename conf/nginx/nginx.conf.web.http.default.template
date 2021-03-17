@@ -2,10 +2,11 @@
 #
 server
 {
-    ${core.ipboth.enabled}listen    [::]:${web.http.port} default ipv6only=off;
-    ${core.ipv4only.enabled}listen    ${web.http.port} default;
-    ${core.ipv6only.enabled}listen    [::]:${web.http.port} default;
-    server_name             ${web.server_name.default}.default;
+    ${core.ipboth.enabled}listen    ${web.http.port} default_server;
+    ${core.ipboth.enabled}listen    [::]:${web.http.port} default_server;
+    ${core.ipv4only.enabled}listen    ${web.http.port} default_server;
+    ${core.ipv6only.enabled}listen    [::]:${web.http.port} default_server;
+    server_name             ${web.server_name.default};
     client_max_body_size 0;
     include                 ${core.includes}/${core.cprefix}.web.http.mode-${web.mailmode};
 
