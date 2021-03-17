@@ -3,7 +3,7 @@
 #client cert auth
 server {
     server_name             ${vhn};
-    ${core.ipboth.enabled}listen                  ${vip}${web.sso.certauth.port} ipv6only=off ssl;
+    ${core.ipboth.enabled}listen                  ${vip}${web.sso.certauth.port} ssl;
     ${core.ipv4only.enabled}listen                  ${vip}${web.sso.certauth.port} ssl;
     ${core.ipv6only.enabled}listen                  ${vip}${web.sso.certauth.port} ssl;
     ${web.add.headers.vhost}
