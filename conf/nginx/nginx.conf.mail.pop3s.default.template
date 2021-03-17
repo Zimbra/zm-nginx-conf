@@ -2,7 +2,7 @@
 #
 server
 {
-    ${core.ipboth.enabled}listen              [::]:${mail.pop3s.port} ipv6only=off ssl;
+    ${core.ipboth.enabled}listen              [::]:${mail.pop3s.port} ssl;
     ${core.ipv4only.enabled}listen            ${mail.pop3s.port} ssl;
     ${core.ipv6only.enabled}listen            [::]:${mail.pop3s.port} ssl;
     ${web.ssl.dhparam.enabled}ssl_dhparam     ${web.ssl.dhparam.file};

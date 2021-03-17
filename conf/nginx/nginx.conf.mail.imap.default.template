@@ -2,7 +2,7 @@
 #
 server
 {
-    ${core.ipboth.enabled}listen                  [::]:${mail.imap.port} ipv6only=off;
+    ${core.ipboth.enabled}listen                  [::]:${mail.imap.port};
     ${core.ipv4only.enabled}listen                ${mail.imap.port};
     ${core.ipv6only.enabled}listen                [::]:${mail.imap.port};
     ${web.ssl.dhparam.enabled}ssl_dhparam         ${web.ssl.dhparam.file};
