@@ -3,6 +3,7 @@
 server
 {
     ${core.ipboth.enabled}listen                  [::]:${mail.pop3.port};
+    ${core.ipboth.enabled}listen                  ${mail.pop3.port};
     ${core.ipv4only.enabled}listen                ${mail.pop3.port};
     ${core.ipv6only.enabled}listen                [::]:${mail.pop3.port};
     ${web.ssl.dhparam.enabled}ssl_dhparam         ${web.ssl.dhparam.file};

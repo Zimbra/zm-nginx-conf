@@ -3,6 +3,7 @@
 server
 {
     ${core.ipboth.enabled}listen    [::]:${web.http.port} default;
+    ${core.ipboth.enabled}listen    ${web.http.port} default;
     ${core.ipv4only.enabled}listen    ${web.http.port} default;
     ${core.ipv6only.enabled}listen    [::]:${web.http.port} default;
     server_name             ${web.server_name.default}.default;
