@@ -85,7 +85,7 @@ http
         ${web.admin.upstream.:servers}
         zmauth_admin;
     }
-
+	include					${core.includes}/${core.cprefix}.onlyoffice.upstream;
     include                 ${core.includes}/${core.cprefix}.docs.upstream;
 
     #  Define the collection of upstream HTTP EWS servers to which we will
