@@ -1,9 +1,10 @@
+!{explode server(onlyoffice)}
 upstream docservice {
-	server localhost:7084 max_fails=0 fail_timeout=0s;
+	server ${server_hostname}:7084 max_fails=0 fail_timeout=0s;
 }
 
 upstream spellchecker {  
-	server localhost:7085;
+	server ${server_hostname}:7085;
 }
 
 map $http_host $this_host {

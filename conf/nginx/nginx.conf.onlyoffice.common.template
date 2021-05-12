@@ -1,4 +1,4 @@
-
+!{explode server(onlyoffice)}
 # Allow internal service only from 127.0.0.1
 location ~* ^(/zdocument)?\/(info|internal)(\/.*)$ {
   allow 127.0.0.1;
