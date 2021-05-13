@@ -483,5 +483,6 @@ server
         internal;
     }
 
+    include                 ${core.includes}/${core.cprefix}.onlyoffice.common;
     include                 ${core.includes}/${core.cprefix}.docs.common;
 }
