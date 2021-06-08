@@ -1,13 +1,8 @@
 !{explode server(onlyoffice)}
-upstream docservice {
-    ${web.upstream.onlyoffice.docservice.:servers}
-    zmauth;
-}
 
-upstream spellchecker {  
-    ${web.upstream.onlyoffice.spellchecker.:servers}
-    zmauth;
-}
+${web.upstream.onlyoffice.docservice}
+
+${web.upstream.onlyoffice.spellchecker}
 
 map $http_host $this_host {
     "" $host;
