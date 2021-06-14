@@ -1,4 +1,3 @@
-!{explode server(onlyoffice)}
 
 ${web.upstream.onlyoffice.docservice}
 
