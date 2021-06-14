@@ -1,11 +1,7 @@
-!{explode server(onlyoffice)}
-upstream docservice {
-	server ${server_hostname}:7084 max_fails=0 fail_timeout=0s;
-}
 
-upstream spellchecker {  
-	server ${server_hostname}:7085;
-}
+${web.upstream.onlyoffice.docservice}
+
+${web.upstream.onlyoffice.spellchecker}
 
 map $http_host $this_host {
     "" $host;
