@@ -5,7 +5,6 @@ server
 {
     server_name             ${vhn};
     ${core.ipboth.enabled}listen                    ${vip}${web.admin.port} ssl;
-    ${core.ipboth.enabled}listen                    [::]:${vip}${web.admin.port} ssl;
     ${core.ipv4only.enabled}listen                  ${vip}${web.admin.port} ssl;
     ${core.ipv6only.enabled}listen                  ${vip}${web.admin.port} ssl;
     ${web.add.headers.vhost}
