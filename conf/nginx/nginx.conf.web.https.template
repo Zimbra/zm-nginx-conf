@@ -502,6 +502,11 @@ server
 
     location ~* /(service|principals|dav|\.well-known|home|octopus|shf|user|certauth|spnegoauth|(zimbra/home)|(zimbra/user))/
     {
+        # ZBUG-2706 Memcached poisoning with unauthenticated request
+        if ($request_uri ~* "%0A|%0D") {
+            return 403;
+        }
+
         # Begin stray redirect hack
         #
         # In some cases, we may get a stray redirect out of the mailhost,
