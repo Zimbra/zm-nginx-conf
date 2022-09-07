@@ -1,19 +1,20 @@
 !{explode server(docs)}
 
-location ^~ /zdocument
-{
-        # convert proxied connection to upgrade to support WebSockets
-        proxy_set_header Upgrade $http_upgrade;
+# static files
+location ^~ /docs/${server_id}/loleaflet {
+    rewrite /docs/${server_id}/(.*) /$1 break;
+    proxy_pass http://docs-${server_id};
+    proxy_set_header Host $http_host;
+    proxy_http_version 1.1;
+}
 
-        # set the host header
-        proxy_set_header X-Forwarded-Host $http_host/zdocument;
-
-        # maintain IP of the client sending requests in headers
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-
-        # change in coming requests to 1.1 to support WebSockets
-        proxy_http_version 1.1;
-
-        # proxy to Doc Server Upstream
-        proxy_pass https://docs-${server_id}/;
+# websockets, download, presentation and image upload
+location ^~ /docs/${server_id}/lool {
+    rewrite  ^  $request_uri;            # get original URI
+    rewrite /docs/${server_id}/(.*) /$1 break;
+    proxy_pass http://docs-${server_id}$uri;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "upgrade";
+    proxy_set_header Host $http_host;
+    proxy_http_version 1.1;
 }
