@@ -1,0 +1,24 @@
+
+${web.upstream.onlyoffice.docservice}
+
+${web.upstream.onlyoffice.spellchecker}
+
+map $http_host $this_host {
+    "" $host;
+    default $http_host;
+}
+
+map $http_x_forwarded_proto $the_scheme {
+     default $http_x_forwarded_proto;
+     "" $scheme;
+}
+
+map $http_x_forwarded_host $the_host {
+    default $http_x_forwarded_host;
+    "" $this_host;
+}
+
+map $http_upgrade $proxy_connection {
+  default upgrade;
+  "" close;
+}
