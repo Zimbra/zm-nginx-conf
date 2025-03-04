@@ -1,0 +1,51 @@
+if ($request_uri ~* "^/accounts/logout") {
+    return 301 /?advancedChat=1&hash=$cookie_ZM_CHAT_HASH&org=$cookie_ZM_CHAT_DID;
+}
+
+if ($request_uri ~* "^/accounts/login") {
+    return 301 /?advancedChat=1&hash=$cookie_ZM_CHAT_HASH&org=$cookie_ZM_CHAT_DID;
+}
+
+if ($arg_advancedChat = "1") {
+    set $server_hash $arg_hash;
+    set $domain_id $arg_org;
+
+    # Drop all parameters
+    rewrite   ^(/.*)  /advanced-chat/$server_hash/$domain_id?;
+}
+
+location ~ ^/advanced-chat/([^/]+)/([^/]+)(/.*)?
+{
+    set $server_hash $1;
+    set $domain_id $2;
+    set $chat_host $domain_id-$server_hash;
+    set $path_param $3;
+    if ($path_param = '') {
+       set $path_param /;
+    }
+
+    rewrite   ^/(.*) $path_param break;
+    proxy_pass https://$chat_host;
+
+    proxy_set_header Host $proxy_chat_host;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection $proxy_connection;
+    proxy_set_header X-Forwarded-Host $the_host;
+    proxy_set_header X-Forwarded-Proto $the_scheme;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_cookie_domain $http_host $proxy_chat_host;
+}
+
+location ~  ^/(static|json|user_uploads|external_content|(accounts/accept_terms))(.*)
+{
+    set $chat_host $cookie_ZM_CHAT_DID-$cookie_ZM_CHAT_HASH;
+
+    proxy_pass https://$chat_host;
+    proxy_set_header Host $proxy_chat_host;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection $proxy_connection;
+    proxy_set_header X-Forwarded-Host $the_host;
+    proxy_set_header X-Forwarded-Proto $the_scheme;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_cookie_domain $http_host $proxy_chat_host;
+}

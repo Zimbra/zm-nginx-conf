@@ -13,6 +13,8 @@ http
     server_names_hash_max_size ${web.server_names.max_size};
     server_names_hash_bucket_size ${web.server_names.bucket_size};
 
+    map_hash_bucket_size 128;
+
     # Define whether nginx will match exact server version against the
     # version received in the client request. Defaults to 'on'
     # Setting this to off will make nginx compare only the major and minor
@@ -87,6 +89,7 @@ http
     }
     include                 ${core.includes}/${core.cprefix}.onlyoffice.upstream;
     include                 ${core.includes}/${core.cprefix}.docs.upstream;
+    include                 ${core.includes}/${core.cprefix}.chat.upstream;
 
     #  Define the collection of upstream HTTP EWS servers to which we will
     #  proxy EWS request. Define each server:port against a server directive
