@@ -13,7 +13,7 @@ http
     server_names_hash_max_size ${web.server_names.max_size};
     server_names_hash_bucket_size ${web.server_names.bucket_size};
 
-    map_hash_bucket_size 128;
+    map_hash_bucket_size ${web.map_hash_bucket_size};
 
     # Define whether nginx will match exact server version against the
     # version received in the client request. Defaults to 'on'
