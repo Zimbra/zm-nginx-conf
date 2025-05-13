@@ -36,7 +36,7 @@ location ~ ^/advanced-chat/([^/]+)/([^/]+)(/.*)?
     proxy_cookie_domain $http_host $proxy_chat_host;
 }
 
-location ~  ^/(static|avatar|user_avatars|json|user_uploads|external_content|(accounts/accept_terms))(.*)
+location ~  ^/(static|avatar|user_avatars|json|user_uploads|external_content|(accounts/accept_terms)|compatibility)(.*)
 {
     set $chat_host $cookie_ZM_CHAT_DID-$cookie_ZM_CHAT_HASH;
 
