@@ -61,5 +61,13 @@ server
         # Avoid leak the ${web.admin.uport} in the response such as 302 redirection
         #
         proxy_redirect https://$relhost:${web.admin.uport}/ https://$relhost:${web.admin.port}/;
-    }   
+    }
+
+    # Custom error pages for upstream connection errors
+    ${web.:error_pages}
+
+    location /zmerror_upstream_ {
+        root /opt/zimbra/data/nginx/html;
+        internal;
+    }
 }
