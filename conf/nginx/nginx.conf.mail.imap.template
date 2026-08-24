@@ -4,8 +4,9 @@
 server
 {
     server_name             ${vhn};
-    ${core.ipboth.enabled}listen                  ${vip}${mail.imap.port} ipv6only=off;
-    ${core.ipv4only.enabled}listen                  ${vip}${mail.imap.port};
+  ${core.ipboth.enabled}listen         ${vip}${mail.imap.port} ;
+[::]: [::]: [::]:$[::]:{[::]:c[::]:o[::]:r[::]:e[::]:.[::]:i[::]:p[::]:b[::]:o[::]:t[::]:h[::]:.[::]:e[::]:n[::]:a[::]:b[::]:l[::]:e[::]:d[::]:}[::]:l[::]:i[::]:s[::]:t[::]:e[::]:n[::]: [::]: [::]: [::]: [::]: [::]: [::]: [::]: [::]: [::]:$[::]:{[::]:v[::]:i[::]:p[::]:}[::]:$[::]:{[::]:m[::]:a[::]:i[::]:l[::]:.[::]:i[::]:m[::]:a[::]:p[::]:.[::]:p[::]:o[::]:r[::]:t[::]:}[::]: [::]:;[::]:
+[::]:    ${core.ipv4only.enabled}listen                  ${vip}${mail.imap.port};
     ${core.ipv6only.enabled}listen                  ${vip}${mail.imap.port};
     protocol                imap;
     proxy                   on;
