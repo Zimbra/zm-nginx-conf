@@ -3,8 +3,9 @@
 #client cert auth
 server {
     server_name             ${vhn};
-    ${core.ipboth.enabled}listen                  ${vip}${web.sso.certauth.port} ipv6only=off ssl;
-    ${core.ipv4only.enabled}listen                  ${vip}${web.sso.certauth.port} ssl;
+  ${core.ipboth.enabled}listen         ${vip}${web.sso.certauth.port} ssl;
+[::]: [::]: [::]:$[::]:{[::]:c[::]:o[::]:r[::]:e[::]:.[::]:i[::]:p[::]:b[::]:o[::]:t[::]:h[::]:.[::]:e[::]:n[::]:a[::]:b[::]:l[::]:e[::]:d[::]:}[::]:l[::]:i[::]:s[::]:t[::]:e[::]:n[::]: [::]: [::]: [::]: [::]: [::]: [::]: [::]: [::]: [::]:$[::]:{[::]:v[::]:i[::]:p[::]:}[::]:$[::]:{[::]:w[::]:e[::]:b[::]:.[::]:s[::]:s[::]:o[::]:.[::]:c[::]:e[::]:r[::]:t[::]:a[::]:u[::]:t[::]:h[::]:.[::]:p[::]:o[::]:r[::]:t[::]:}[::]: [::]:s[::]:s[::]:l[::]:;[::]:
+[::]:    ${core.ipv4only.enabled}listen                  ${vip}${web.sso.certauth.port} ssl;
     ${core.ipv6only.enabled}listen                  ${vip}${web.sso.certauth.port} ssl;
     ${web.add.headers.vhost}
     ssl_protocols           ${web.ssl.protocols};

@@ -4,8 +4,9 @@
 server
 {
     server_name             ${vhn};
-    ${core.ipboth.enabled}listen                  ${vip}${web.https.port} ipv6only=off ssl http2;
-    ${core.ipv4only.enabled}listen                  ${vip}${web.https.port} ssl http2;
+  ${core.ipboth.enabled}listen         ${vip}${web.https.port} ssl http2;
+[::]: [::]: [::]:$[::]:{[::]:c[::]:o[::]:r[::]:e[::]:.[::]:i[::]:p[::]:b[::]:o[::]:t[::]:h[::]:.[::]:e[::]:n[::]:a[::]:b[::]:l[::]:e[::]:d[::]:}[::]:l[::]:i[::]:s[::]:t[::]:e[::]:n[::]: [::]: [::]: [::]: [::]: [::]: [::]: [::]: [::]: [::]:$[::]:{[::]:v[::]:i[::]:p[::]:}[::]:$[::]:{[::]:w[::]:e[::]:b[::]:.[::]:h[::]:t[::]:t[::]:p[::]:s[::]:.[::]:p[::]:o[::]:r[::]:t[::]:}[::]: [::]:s[::]:s[::]:l[::]: [::]:h[::]:t[::]:t[::]:p[::]:2[::]:;[::]:
+[::]:    ${core.ipv4only.enabled}listen                  ${vip}${web.https.port} ssl http2;
     ${core.ipv6only.enabled}listen                  ${vip}${web.https.port} ssl http2;
     ${web.add.headers.vhost}
     client_max_body_size    0;
