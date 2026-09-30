@@ -6,6 +6,7 @@ server
     ${core.ipv4only.enabled}listen    ${web.http.port} default;
     ${core.ipv6only.enabled}listen    [::]:${web.http.port} default;
     server_name             ${web.server_name.default}.default;
+    ${web.modern.csp.header}
     client_max_body_size 0;
     include                 ${core.includes}/${core.cprefix}.web.http.mode-${web.mailmode};
 
@@ -96,6 +97,9 @@ server
 
         # Proxy to Zimbra Upstream
         proxy_pass ${web.upstream.webclient.target};
+
+        # sub_filter injects the Modern UI CSP nonce and cannot rewrite compressed responses
+        proxy_set_header Accept-Encoding $zimbra_modern_ae;
 
         # For audit
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
