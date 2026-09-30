@@ -7,6 +7,7 @@ server
     ${core.ipboth.enabled}listen            ${vip}${web.http.port} ipv6only=off;
     ${core.ipv4only.enabled}listen            ${vip}${web.http.port};
     ${core.ipv6only.enabled}listen            ${vip}${web.http.port};
+    ${web.modern.csp.header}
     client_max_body_size 0;
     include                 ${core.includes}/${core.cprefix}.web.http.mode-${web.mailmode};
 
