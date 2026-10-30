@@ -41,6 +41,12 @@ location ~ ^(/zdocument)\/([^\/]+)?(\/spellchecker)(\/.*)$ {
 }
 
 
+# Block direct access to the native docbuilder endpoint
+location ~ ^/zdocument/[^/]+/(?i)docbuilder {
+    return 403;
+}
+
+
 location ~ ^(\/zdocument)\/([^\/]+)(\/.*)
 {
   set $rel_loc $2;
